@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Cache
+storage/cache/*
+!storage/cache/.gitkeep
+
+# Uploads (optionnel, commenter si besoin de persister)
+# public/uploads/*
+# !public/uploads/.gitkeep
+
+# Documentation
+README.md
+docs/
+
+# Tests
+tests/
+phpunit.xml
+
+# Environnement local
+.env.local

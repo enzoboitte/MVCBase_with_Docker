@@ -1,0 +1,11 @@
+RewriteEngine On
+RewriteBase /
+
+# Autoriser l'accès aux fichiers statiques
+RewriteCond %{REQUEST_URI} ^/public/src/
+RewriteRule ^ - [L]
+
+# Rediriger tout le reste vers index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
