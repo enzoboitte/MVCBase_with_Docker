@@ -16,7 +16,7 @@ class Controller
             // Créer le dossier parent si nécessaire
             $dir = dirname($viewFile);
             if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
+                mkdir($dir, 0777, true);
             }
             
             // Créer le fichier depuis le template

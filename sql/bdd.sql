@@ -42,6 +42,26 @@ CREATE TABLE `HaveProject`(
 ) ENGINE = InnoDB;
 
 
+-- TECHNO LEARN TABLES
+CREATE TABLE `TechnoLearn`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `techno_code` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- CONTACT TABLES
+CREATE TABLE `ContactMessage`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(150) NOT NULL,
+    `subject` VARCHAR(150) NOT NULL,
+    `message` TEXT NOT NULL,
+    `status` ENUM('new', 'read') DEFAULT 'new',
+    `pin` ENUM('normal', 'favorite', 'archived') DEFAULT 'normal',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
 
 
 -- DIPLOMA TABLES

@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'MVC PHP' ?></title>
     <link rel="stylesheet" href="/public/src/css/style.css">
+    <?php if (isset($customCss)): ?>
+    <link rel="stylesheet" href="<?= $customCss ?>">
+    <?php endif; ?>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
+<body<?= isset($bodyClass) ? ' class="' . $bodyClass . '"' : '' ?>>
     <?php
     if(isset($back)): ?>
         <a href="<?= htmlspecialchars($back) ?>" class="back-button">← Retour</a>
@@ -55,5 +60,8 @@
     </div>-->
 
     <script src="/public/src/js/app.js"></script>
+    <?php if (isset($customJs)): ?>
+    <script src="<?= $customJs ?>"></script>
+    <?php endif; ?>
 </body>
 </html>

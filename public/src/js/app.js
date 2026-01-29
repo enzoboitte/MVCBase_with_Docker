@@ -108,6 +108,33 @@ async function handleTable(table)
     }
 }
 
+function openPopup(id)
+{
+    const popup = document.getElementById(id);
+    if(popup)
+    {
+        popup.classList.add('show');
+
+        const closeBtn = popup.querySelector(`#${id} .popup_close`);
+        if(closeBtn)
+        {
+            closeBtn.addEventListener('click', () => 
+            {
+                popup.classList.remove('show');
+            });
+        }
+
+        // close popup when clicking outside content
+        popup.addEventListener('click', (event) => 
+        {
+            if(event.target === popup)
+            {
+                popup.classList.remove('show');
+            }
+        });
+    }
+}
+
 // a chaque chargement de la page, recupere tous les formulaires/tableaux avec l'attribut data-api-endpoint
 document.addEventListener('DOMContentLoaded', () => 
 {

@@ -1,0 +1,75 @@
+/* DashBoard Contact Message */
+.list_message {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .message_card {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition-duration: 0.3s;
+
+        height: 130px;
+
+        /* Remove text selection */
+        user-select: none;
+
+        .message_header {
+            display: flex;
+            margin-bottom: 10px;
+            font-size: 14px;
+            gap: 10px;
+
+            .message_sender {
+                font-weight: bold;
+                margin-right: auto;
+            }
+
+            .message_email {
+                font-style: italic;
+                color: #555;
+            }
+
+            .message_date {
+                color: #888;
+            }
+        }
+
+        .message_subject {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .message_body {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .message_card:hover {
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+
+
+.favorite {
+    color: #ffcc00;
+}
+
+.archived {
+    color: #44612e;
+}
+
+.unread {
+    font-weight: bold;
+    border: 2px solid #000 !important;
+}
