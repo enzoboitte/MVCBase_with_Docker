@@ -72,6 +72,8 @@ ob_start();
                 listMessageDiv.innerHTML = '';
 
                 messages.forEach(message => {
+                    if(message.pin == "archived")
+                        return;
                     const messageCard = document.createElement('div');
                     messageCard.classList.add('message_card');
                     if(message.status == "new")
@@ -82,6 +84,16 @@ ob_start();
                         const popupSubject = document.getElementById('subject');
                         popupSubject.textContent = `${message.subject}`;
                         openPopup('contact');
+                        
+                        if(message.status == "new")
+                            apiRequest('PUT', `/contact/status/${message.id}/read`).then(result => {
+                                if (result.code === 200)
+                                    loadMessage();
+                                else 
+                                    alert('Error archiving message: ' + result.message);
+                            }).catch(error => {
+                                console.error('Error archiving message:', error);
+                            });
                     });
 
                     messageCard.innerHTML = `

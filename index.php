@@ -1,8 +1,24 @@
 <?php
 define('ROOT', __DIR__);
 
-//require_once ROOT . '/app/models/Model.php';
-//Model::F_vInitBDD();
+require_once ROOT . '/app/models/Model.php';
+
+$l_sBdd = getenv('DB_DATABASE') ?: 'portfolio';
+$l_cCon = Model::getConnection();
+// si la BDD n'existe pas, la créer
+$sql = "SHOW DATABASES LIKE '$l_sBdd'";
+$stmt = $l_cCon->query($sql);
+if ($stmt->rowCount() === 0) 
+{
+    Model::F_vInitBDD();
+}
+
+$sql = "SHOW TABLES";
+$stmt = $l_cCon->query($sql);
+if ($stmt->rowCount() === 0) 
+{
+    Model::F_vInitBDD();
+}
 
 // Autoloader simple
 spl_autoload_register(function ($class) {
