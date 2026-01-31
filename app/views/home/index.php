@@ -5,7 +5,6 @@
     <div class="navbar-content">
         <a href="/" class="navbar-logo">BOITTE Enzo<span>.</span></a>
         <ul class="navbar-links">
-            <li><a href="#about">À propos</a></li>
             <li><a href="#skills">Compétences</a></li>
             <li><a href="#education">Parcours</a></li>
             <li><a href="#projects">Projets</a></li>
@@ -46,16 +45,18 @@
 </section>
 
 <!-- Skills Section -->
-<section id="skills" class="section skills-section">
-    <div class="section-header fade-in">
-        <h2 class="section-title">Compétences</h2>
-        <p class="section-subtitle">Les technologies que j'utilise au quotidien pour créer des applications web modernes.</p>
-    </div>
-    
-    <div class="skills-grid" id="skills-grid">
-        <!-- Les compétences seront chargées dynamiquement -->
-    </div>
-</section>
+<div class="skills-section">
+    <section id="skills" class="section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Compétences</h2>
+            <p class="section-subtitle">Les technologies que j'utilise au quotidien pour créer des applications web modernes.</p>
+        </div>
+        
+        <div class="skills-grid" id="skills-grid">
+            <!-- Les compétences seront chargées dynamiquement -->
+        </div>
+    </section>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             result.data.forEach((diploma, index) => {
                 const item = document.createElement('div');
-                const side = index % 2 === 0 ? 'right' : 'left';
+                const side = index % 2 === 0 ? 'left' : 'right';
                 item.className = `timeline-item timeline-${side} fade-in visible`;
                 item.style.animationDelay = `${index * 0.15}s`;
                 
