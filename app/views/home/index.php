@@ -7,6 +7,7 @@
         <ul class="navbar-links">
             <li><a href="#about">À propos</a></li>
             <li><a href="#skills">Compétences</a></li>
+            <li><a href="#education">Parcours</a></li>
             <li><a href="#projects">Projets</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -51,50 +52,111 @@
         <p class="section-subtitle">Les technologies que j'utilise au quotidien pour créer des applications web modernes.</p>
     </div>
     
-    <div class="skills-grid">
-        <div class="skill-card fade-in">
-            <div class="skill-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-            </div>
-            <h3>Développement Frontend</h3>
-            <p>Création d'interfaces utilisateur modernes et responsive avec les dernières technologies web.</p>
-            <div class="skill-tags">
-                <span class="skill-tag">HTML5</span>
-                <span class="skill-tag">CSS3</span>
-                <span class="skill-tag">JavaScript</span>
-                <span class="skill-tag">React</span>
-            </div>
-        </div>
-        
-        <div class="skill-card fade-in">
-            <div class="skill-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-            </div>
-            <h3>Développement Backend</h3>
-            <p>Architecture robuste et API performantes pour des applications web scalables.</p>
-            <div class="skill-tags">
-                <span class="skill-tag">PHP</span>
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">Node.js</span>
-                <span class="skill-tag">MySQL</span>
-            </div>
-        </div>
-        
-        <div class="skill-card fade-in">
-            <div class="skill-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
-            </div>
-            <h3>Outils & DevOps</h3>
-            <p>Environnements de développement optimisés et déploiement automatisé.</p>
-            <div class="skill-tags">
-                <span class="skill-tag">Docker</span>
-                <span class="skill-tag">Git</span>
-                <span class="skill-tag">Linux</span>
-                <span class="skill-tag">VS Code</span>
-            </div>
-        </div>
+    <div class="skills-grid" id="skills-grid">
+        <!-- Les compétences seront chargées dynamiquement -->
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('/competence/grouped');
+        const result = await response.json();
+        
+        if (result.data && result.data.length > 0) {
+            const grid = document.getElementById('skills-grid');
+            grid.innerHTML = '';
+            
+            const icons = {
+                'fa-desktop': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
+                'fa-server': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
+                'fa-cogs': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>'
+            };
+            
+            result.data.forEach((category, index) => {
+                const card = document.createElement('div');
+                card.className = 'skill-card fade-in visible';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                const skillTags = category.skills.map(skill => 
+                    `<span class="skill-tag">${skill.libelle}</span>`
+                ).join('');
+                
+                card.innerHTML = `
+                    <div class="skill-icon">
+                        ${icons[category.icon] || icons['fa-desktop']}
+                    </div>
+                    <h3>${category.name}</h3>
+                    <p>${category.description || ''}</p>
+                    <div class="skill-tags">
+                        ${skillTags || '<span class="skill-tag">Aucune compétence</span>'}
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to load skills:', error);
+    }
+});
+</script>
+
+<!-- Education Section -->
+<section id="education" class="section education-section">
+    <div class="section-header fade-in">
+        <h2 class="section-title">Parcours Scolaire</h2>
+        <p class="section-subtitle">Mon parcours académique et mes formations.</p>
+    </div>
+    
+    <div class="education-timeline" id="education-timeline">
+        <!-- Les diplômes seront chargés dynamiquement -->
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('/diploma');
+        const result = await response.json();
+        
+        if (result.data && result.data.length > 0) {
+            const timeline = document.getElementById('education-timeline');
+            timeline.innerHTML = '';
+            
+            result.data.forEach((diploma, index) => {
+                const item = document.createElement('div');
+                const side = index % 2 === 0 ? 'right' : 'left';
+                item.className = `timeline-item timeline-${side} fade-in visible`;
+                item.style.animationDelay = `${index * 0.15}s`;
+                
+                const years = diploma.end_at && diploma.end_at !== 'Act.' 
+                    ? `${diploma.start_at} - ${diploma.end_at}`
+                    : `${diploma.start_at} - En cours`;
+                
+                item.innerHTML = `
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>${diploma.name}</h3>
+                            <span class="timeline-years">${years}</span>
+                        </div>
+                        <div class="timeline-school">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            ${diploma.school} • ${diploma.country}
+                        </div>
+                        <p class="timeline-description">${diploma.description}</p>
+                    </div>
+                `;
+                
+                timeline.appendChild(item);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to load education:', error);
+    }
+});
+</script>
 
 <!-- Projects Section -->
 <section id="projects" class="section">

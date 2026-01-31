@@ -8,7 +8,7 @@ ob_start();
     
     <h2>Gestion des diplômes</h2>
     <!-- Liste des diplômes -->
-    <table id="diplomaList" data-api-endpoint="/diploma" data-api-method="GET">
+    <table id="diplomaList" data-api-endpoint="/diploma" data-api-method="GET" data-edit-url="/dashboard/diploma/edit">
         <thead>
             <tr></tr>
         </thead>
@@ -28,13 +28,13 @@ ob_start();
         <input type="text" id="country" name="country" required>
     
         <label for="description">Description :</label>
-        <textarea id="description" name="description" required></textarea>
+        <textarea id="description" name="description"></textarea>
     
         <label for="start_year">Année de début :</label>
         <input type="number" id="start_year" name="start_at" required>
     
         <label for="end_year">Année de fin :</label>
-        <input type="number" id="end_year" name="end_at" required>
+        <input type="text" id="end_year" name="end_at" required>
     
         <button type="submit">Ajouter le diplôme</button>
     </form>

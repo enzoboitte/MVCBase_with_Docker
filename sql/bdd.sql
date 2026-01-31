@@ -76,6 +76,31 @@ CREATE TABLE `Diploma`(
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
+
+-- COMPETENCE TABLES (Front-End, Back-End, DevOps)
+CREATE TABLE `CompetenceCategory`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `description` TEXT NULL,
+    `icon` VARCHAR(50) NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+CREATE TABLE `Competence`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `category_id` INT NOT NULL,
+    `techno_code` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`category_id`) REFERENCES `CompetenceCategory`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- INSERT INITIAL COMPETENCE CATEGORIES
+INSERT INTO `CompetenceCategory` (`name`, `description`, `icon`) VALUES
+('Front-End', 'Technologies et frameworks pour le développement côté client', 'fa-desktop'),
+('Back-End', 'Technologies et frameworks pour le développement côté serveur', 'fa-server'),
+('DevOps', 'Outils et technologies pour le déploiement et l''infrastructure', 'fa-cogs');
+
 -- INSERT INITIAL DATA FROM TECHNOLOGIES
 INSERT INTO `TechnoProject` (`code`, `libelle`, `color`) VALUES
 ('ANDROID', 'Android', '#3ddc84'),

@@ -389,6 +389,142 @@
 }
 
 /* ================================================
+   EDUCATION SECTION (Parcours Scolaire)
+   ================================================ */
+.education-section {
+    background: var(--bg-color);
+}
+
+.education-timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.education-timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--primary-color), var(--gradient-end));
+    border-radius: 2px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+    width: 50%;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Items à droite (index pair: 0, 2, 4...) */
+.timeline-item.timeline-right {
+    margin-left: 50%;
+    padding-left: 40px;
+}
+
+/* Items à gauche (index impair: 1, 3, 5...) */
+.timeline-item.timeline-left {
+    margin-right: 50%;
+    padding-right: 40px;
+    text-align: right;
+}
+
+.timeline-marker {
+    position: absolute;
+    /*top: 20px;*/
+    top: calc(50% - 9px);
+    width: 18px;
+    height: 18px;
+    background: var(--bg-color);
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.timeline-item.timeline-right .timeline-marker {
+    left: -9px;
+}
+
+.timeline-item.timeline-left .timeline-marker {
+    right: -9px;
+}
+
+.timeline-item:hover .timeline-marker {
+    background: var(--primary-color);
+    transform: scale(1.2);
+}
+
+.timeline-content {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.timeline-item:hover .timeline-content {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.timeline-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.timeline-years {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.timeline-school {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+}
+
+.timeline-school svg {
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.timeline-description {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ================================================
    PROJECTS SECTION
    ================================================ */
 .projects-grid {
@@ -670,5 +806,50 @@
     
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Education responsive - Single column on mobile */
+    .education-timeline {
+        padding-left: 30px;
+    }
+
+    .education-timeline::before {
+        left: 5px;
+    }
+
+    .timeline-item.timeline-left,
+    .timeline-item.timeline-right {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 25px;
+        padding-right: 0;
+        text-align: left;
+    }
+
+    .timeline-item.timeline-left .timeline-marker,
+    .timeline-item.timeline-right .timeline-marker {
+        left: -25px;
+        right: auto;
+        width: 14px;
+        height: 14px;
+    }
+
+    .timeline-content {
+        padding: 1.25rem;
+    }
+
+    .timeline-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        justify-content: flex-start;
+    }
+
+    .timeline-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
     }
 }

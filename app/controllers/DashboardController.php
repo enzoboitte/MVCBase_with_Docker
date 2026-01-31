@@ -40,4 +40,44 @@ class DashboardController extends Controller
             'title' => 'Tableau de bord - Messages de contact'
         ]);
     }
+
+
+    #[CRoute('/dashboard/technologies', CHTTPMethod::GET)]
+    public function technologies(): void
+    {
+        $this->view('dashboard/techno', [
+            'back' => '/dashboard',
+            'title' => 'Tableau de bord - Technologies'
+        ]);
+    }
+
+    #[CRoute('/dashboard/technologies/edit/{code}', CHTTPMethod::GET)]
+    public function editTechno(string $code): void
+    {
+        $this->view('dashboard/edit_techno', [
+            'back' => '/dashboard/technologies',
+            'title' => 'Tableau de bord - Modifier Technologie',
+            'technoCode' => $code
+        ]);
+    }
+
+
+    #[CRoute('/dashboard/competences', CHTTPMethod::GET)]
+    public function competences(): void
+    {
+        $this->view('dashboard/competence', [
+            'back' => '/dashboard',
+            'title' => 'Tableau de bord - Compétences'
+        ]);
+    }
+
+    #[CRoute('/dashboard/competences/edit/{id}', CHTTPMethod::GET)]
+    public function editCompetence(string $id): void
+    {
+        $this->view('dashboard/edit_competence', [
+            'back' => '/dashboard/competences',
+            'title' => 'Tableau de bord - Modifier Compétence',
+            'competenceId' => $id
+        ]);
+    }
 }

@@ -17,13 +17,13 @@ ob_start();
         <input type="text" id="country" name="country" required>
     
         <label for="description">Description :</label>
-        <textarea id="description" name="description" required></textarea>
+        <textarea id="description" name="description"></textarea>
     
         <label for="start_year">Année de début :</label>
         <input type="number" id="start_year" name="start_at" required>
     
         <label for="end_year">Année de fin :</label>
-        <input type="number" id="end_year" name="end_at" required>
+        <input type="text" id="end_year" name="end_at" required>
     
         <button type="submit">Modifier le diplôme</button>
     </form>

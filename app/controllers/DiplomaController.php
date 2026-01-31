@@ -6,7 +6,7 @@ class DiplomaController extends Controller
     public function index(): void
     {
         $l_cCon = Model::getConnection();
-        $l_sSql = 'SELECT * FROM Diploma';
+        $l_sSql = 'SELECT * FROM Diploma ORDER BY end_date DESC, start_date DESC';
         $l_oStmt = $l_cCon->prepare($l_sSql);
         $l_oStmt->execute();
 
