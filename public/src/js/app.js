@@ -68,6 +68,7 @@ async function handleTable(table)
             {
                 const updateCell = document.createElement('td');
                 const updateButton = document.createElement('button');
+                updateButton.classList.add('update-button');
                 updateButton.textContent = 'Update';
                 updateButton.addEventListener('click', () => 
                 {
@@ -81,6 +82,7 @@ async function handleTable(table)
             {
                 const deleteCell = document.createElement('td');
                 const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.addEventListener('click', () => 
                 {

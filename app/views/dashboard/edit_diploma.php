@@ -1,4 +1,5 @@
 <?
+$customCss = '/public/src/css/dashboard/index.css';
 ob_start();
 ?>
 <div class="dashboard">

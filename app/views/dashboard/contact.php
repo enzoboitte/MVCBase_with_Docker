@@ -1,6 +1,6 @@
-<link rel="stylesheet" href="/public/src/css/dashboard/contact.css">
-
 <?
+$customCss = '/public/src/css/dashboard/index.css';
+$customCss = '/public/src/css/dashboard/contact.css';
 ob_start();
 ?>
 
