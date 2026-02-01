@@ -58,51 +58,6 @@
     </section>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('/competence/grouped');
-        const result = await response.json();
-        
-        if (result.data && result.data.length > 0) {
-            const grid = document.getElementById('skills-grid');
-            grid.innerHTML = '';
-            
-            const icons = {
-                'fa-desktop': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
-                'fa-server': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
-                'fa-cogs': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>'
-            };
-            
-            result.data.forEach((category, index) => {
-                const card = document.createElement('div');
-                card.className = 'skill-card fade-in visible';
-                card.style.animationDelay = `${index * 0.1}s`;
-                
-                const skillTags = category.skills.map(skill => 
-                    `<span class="skill-tag">${skill.libelle}</span>`
-                ).join('');
-                
-                card.innerHTML = `
-                    <div class="skill-icon">
-                        ${icons[category.icon] || icons['fa-desktop']}
-                    </div>
-                    <h3>${category.name}</h3>
-                    <p>${category.description || ''}</p>
-                    <div class="skill-tags">
-                        ${skillTags || '<span class="skill-tag">Aucune compétence</span>'}
-                    </div>
-                `;
-                
-                grid.appendChild(card);
-            });
-        }
-    } catch (error) {
-        console.error('Failed to load skills:', error);
-    }
-});
-</script>
-
 <!-- Education Section -->
 <section id="education" class="section education-section">
     <div class="section-header fade-in">
@@ -115,50 +70,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     </div>
 </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('/diploma');
-        const result = await response.json();
-        
-        if (result.data && result.data.length > 0) {
-            const timeline = document.getElementById('education-timeline');
-            timeline.innerHTML = '';
-            
-            result.data.forEach((diploma, index) => {
-                const item = document.createElement('div');
-                const side = index % 2 === 0 ? 'left' : 'right';
-                item.className = `timeline-item timeline-${side} fade-in visible`;
-                item.style.animationDelay = `${index * 0.15}s`;
-                
-                const years = diploma.end_at && diploma.end_at !== 'Act.' 
-                    ? `${diploma.start_at} - ${diploma.end_at}`
-                    : `${diploma.start_at} - En cours`;
-                
-                item.innerHTML = `
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-header">
-                            <h3>${diploma.name}</h3>
-                            <span class="timeline-years">${years}</span>
-                        </div>
-                        <div class="timeline-school">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                            ${diploma.school} • ${diploma.country}
-                        </div>
-                        <p class="timeline-description">${diploma.description}</p>
-                    </div>
-                `;
-                
-                timeline.appendChild(item);
-            });
-        }
-    } catch (error) {
-        console.error('Failed to load education:', error);
-    }
-});
-</script>
-
 <!-- Projects Section -->
 <section id="projects" class="section">
     <div class="section-header fade-in">
@@ -166,63 +77,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         <p class="section-subtitle">Découvrez quelques-uns des projets sur lesquels j'ai travaillé.</p>
     </div>
     
-    <div class="projects-grid">
-        <article class="project-card fade-in">
-            <div class="project-image">
-                <span class="project-placeholder"></span>
-            </div>
-            <div class="project-content">
-                <h3>MVC Framework PHP</h3>
-                <p>Framework MVC léger inspiré de Symfony avec routing par attributs et système de formulaires API automatique.</p>
-                <div class="project-tech">
-                    <span>PHP 8</span>
-                    <span>Docker</span>
-                    <span>MySQL</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/enzoboitte/MVCBase_with_Docker" class="project-link" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                        GitHub
-                    </a>
-                </div>
-            </div>
-        </article>
-        
-        <article class="project-card fade-in">
-            <div class="project-image">
-                <span class="project-placeholder"></span>
-            </div>
-            <div class="project-content">
-                <h3>Portfolio Personnel</h3>
-                <p>Site portfolio moderne présentant mes compétences et réalisations avec animations fluides.</p>
-                <div class="project-tech">
-                    <span>PHP</span>
-                    <span>CSS3</span>
-                    <span>JavaScript</span>
-                </div>
-                <div class="project-links">
-                    <a href="#" class="project-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Voir le site
-                    </a>
-                </div>
-            </div>
-        </article>
-        
-        <article class="project-card fade-in">
-            <div class="project-image">
-                <span class="project-placeholder"></span>
-            </div>
-            <div class="project-content">
-                <h3>Projet à venir</h3>
-                <p>De nouveaux projets passionnants sont en cours de développement...</p>
-                <div class="project-tech">
-                    <span>Coming Soon</span>
-                </div>
-            </div>
-        </article>
+    <div class="projects-grid" id="projects-grid">
+        <!-- Les projets seront chargés dynamiquement -->
     </div>
 </section>
+
+<!-- Popup Projet -->
+<div id="project-popup" class="popup">
+    <div class="popup_content">
+        <div class="popup_header">
+            <h2 class="popup_title" id="popup-project-title"></h2>
+            <span class="popup_close">&times;</span>
+        </div>
+        <div class="popup_body">
+            <div id="popup-project-images" class="popup-images"></div>
+            <p id="popup-project-description" class="popup-description"></p>
+            <div id="popup-project-techs" class="popup-techs"></div>
+            <div id="popup-project-link" class="popup-link"></div>
+        </div>
+    </div>
+</div>
 
 <!-- Contact Section -->
 <section id="contact" class="section contact-section">

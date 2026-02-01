@@ -528,9 +528,12 @@
    PROJECTS SECTION
    ================================================ */
 .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    display: flex;
     gap: 2rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .project-card {
@@ -539,6 +542,7 @@
     overflow: hidden;
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
+    width: 400px;
 }
 
 .project-card:hover {
@@ -630,6 +634,58 @@
 .project-link svg {
     width: 16px;
     height: 16px;
+}
+
+/* Project icons par plateforme */
+.project-link[href*="github.com"] svg { color: #181717; }
+.project-link[href*="gitlab.com"] svg { color: #fc6d26; }
+.project-link[href*="bitbucket.org"] svg { color: #0052cc; }
+.project-link[href*="codepen.io"] svg { color: #000000; }
+.project-link[href*="youtube.com"] svg,
+.project-link[href*="youtu.be"] svg { color: #ff0000; }
+.project-link[href*="vercel"] svg { color: #000000; }
+.project-link[href*="netlify"] svg { color: #00c7b7; }
+
+/* Loading state pour les projets */
+.projects-grid:empty::before {
+    content: '';
+    grid-column: 1 / -1;
+    height: 300px;
+    background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 16px;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Style pour l'image placeholder animée */
+.project-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--border-color) 50%, var(--bg-secondary) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+.project-placeholder::before {
+    content: 'nothing';
+    font-size: 3rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* ================================================
@@ -765,17 +821,143 @@
 }
 
 /* ================================================
+   BORDERED BOXES SKILLS
+   ================================================ */
+.skill-tag {
+
+    &.HTML { border: solid 1px #e34c26; }
+    &.CSS { border: solid 1px #264de4; }
+    &.JS { border: solid 1px #f0db4f; }
+    &.PHP { border: solid 1px #8892be; }
+    &.SQL { border: solid 1px #4479a1; }
+    &.REACT { border: solid 1px #61dafb; }
+    &.NODE { border: solid 1px #68a063; }
+    &.MONGO { border: solid 1px #4db33d; }
+    &.GIT { border: solid 1px #f34f29; }
+    &.SASS { border: solid 1px #c69; }
+    &.BOOTSTRAP { border: solid 1px #563d7c; }
+    &.WORDPRESS { border: solid 1px #21759b; }
+    &.PHOTOSHOP { border: solid 1px #31a8ff; }
+    &.ILLUSTRATOR { border: solid 1px #ff7f00; }
+    &.XD { border: solid 1px #ff61f6; }
+    &.FIGMA { border: solid 1px #0acf83; }
+    &.CPP { border: solid 1px #00599c; }
+    &.JAVA { border: solid 1px #007396; }
+    &.PYTHON { border: solid 1px #306998; }
+    &.CSHARP { border: solid 1px #68217a; }
+    &.UNITY { border: solid 1px #000000; }
+    &.BLENDER { border: solid 1px #f5792a; }
+    &.GIMP { border: solid 1px #5c5543; }
+    &.INKSCAPE { border: solid 1px #000000; }
+    &.FLUTTER { border: solid 1px #02569b; }
+    &.DART { border: solid 1px #0175c2; }
+    &.FIREBASE { border: solid 1px #ffca28; }
+    &.HEROKU { border: solid 1px #6762a6; }
+    &.DOTNET { border: solid 1px #512bd4; }
+    &.JQUERY { border: solid 1px #0868ac; }
+    &.ANGULAR { border: solid 1px #dd0031; }
+    &.VUE { border: solid 1px #42b883; }
+    &.LARAVEL { border: solid 1px #ff2d20; }
+    &.SYMFONY { border: solid 1px #111111; }
+    &.EXPRESS { border: solid 1px #404040; }
+    &.SOCKETIO { border: solid 1px #010101; }
+    &.MYSQL { border: solid 1px #4479a1; }
+    &.POSTGRESQL { border: solid 1px #336791; }
+    &.SQLITE { border: solid 1px #003b57; }
+    &.C { border: solid 1px #a8b9cc; }
+    &.ASSEMBLY { border: solid 1px #808080; }
+    &.BASH { border: solid 1px #4eaa25; }
+    &.DOCKER { border: solid 1px #2496ed; }
+    &.KUBERNETES { border: solid 1px #326ce5; }
+    &.JENKINS { border: solid 1px #d24939; }
+    &.ANSIBLE { border: solid 1px #ee0000; }
+    &.TERRAFORM { border: solid 1px #623ce4; }
+    &.PUPPET { border: solid 1px #302b6d; }
+    &.CHEF { border: solid 1px #f14f2e; }
+    &.SALTSTACK { border: solid 1px #d79a23; }
+    &.PROMETHEUS { border: solid 1px #e6522c; }
+    &.GRAFANA { border: solid 1px #f46800; }
+    &.ELK { border: solid 1px #005571; }
+    &.NAGIOS { border: solid 1px #cc0000; }
+    &.ZABBIX { border: solid 1px #ff0000; }
+    &.GITLAB { border: solid 1px #fc6d26; }
+    &.GITHUB { border: solid 1px #181717; }
+    &.BITBUCKET { border: solid 1px #0052cc; }
+    &.JIRA { border: solid 1px #0052cc; }
+    &.CONFLUENCE { border: solid 1px #172b4d; }
+    &.TRELLO { border: solid 1px #0079bf; }
+    &.KOTLIN { border: solid 1px #0095d5; }
+    &.SWIFT { border: solid 1px #ffac45; }
+    &.OBJECTIVEC { border: solid 1px #686868; }
+    &.RUBY { border: solid 1px #cc342d; }
+    &.RAILS { border: solid 1px #cc0000; }
+    &.GO { border: solid 1px #00add8; }
+    &.RUST { border: solid 1px #dea584; }
+    &.HASKELL { border: solid 1px #5e5086; }
+    &.SCALA { border: solid 1px #c22d40; }
+    &.CLOJURE { border: solid 1px #5881d8; }
+    &.ELIXIR { border: solid 1px #6e4a7e; }
+    &.ERLANG { border: solid 1px #a90533; }
+    &.LUA { border: solid 1px #000080; }
+    &.PERL { border: solid 1px #39457e; }
+    &.R { border: solid 1px #276dc3; }
+    &.TYPESCRIPT { border: solid 1px #007acc; }
+    &.SHELL { border: solid 1px #89e051; }
+    &.POWERSHELL { border: solid 1px #012456; }
+    &.COBOL { border: solid 1px #005f9e; }
+    &.BASIC { border: solid 1px #ff4500; }
+    &.FORTRAN { border: solid 1px #4d41b1; }
+    &.LINUX { border: solid 1px #f5a442; }
+    &.WINDOWS { border: solid 1px #0078d7; }
+    &.MACOS { border: solid 1px #6e6e6e; }
+    &.ANDROID { border: solid 1px #3ddc84; }
+    &.IOS { border: solid 1px #888888; }
+    &.ECLIPSE { border: solid 1px #2c2255; }
+    &.VSCODE { border: solid 1px #0078d7; }
+    &.INTELLIJ { border: solid 1px #000080; }
+    &.NETBEANS { border: solid 1px #1b6ac6; }
+    &.SUBLIME { border: solid 1px #ff9800; }
+    &.ATOM { border: solid 1px #66595c; }
+    &.VIM { border: solid 1px #019733; }
+    &.EMACS { border: solid 1px #7f5ab6; }
+    &.BRACKETS { border: solid 1px #3389de; }
+    &.WEBSTORM { border: solid 1px #000080; }
+    &.PYCHARM { border: solid 1px #4caf50; }
+    &.PHPSTORM { border: solid 1px #8892be; }
+    &.RUBYMINE { border: solid 1px #cc342d; }
+    &.CLION { border: solid 1px #00599c; }
+    &.RIDER { border: solid 1px #68217a; }
+    &.APPCODE { border: solid 1px #888888; }
+    &.GOLAND { border: solid 1px #00add8; }
+    &.DATAGRIP { border: solid 1px #512bd4; }
+    &.ANDROIDSTUDIO { border: solid 1px #3ddc84; }
+    &.XCODE { border: solid 1px #147efb; }
+    &.VISUALSTUDIO { border: solid 1px #68217a; }
+    &.VIRTUALBOX { border: solid 1px #183a61; }
+    &.VMWARE { border: solid 1px #607078; }
+    &.PUTTY { border: solid 1px #000080; }
+    &.WINSCP { border: solid 1px #4e9a06; }
+    &.FILEZILLA { border: solid 1px #bf0000; }
+    &.SSH { border: solid 1px #d0d0d0; }
+}
+
+/* ================================================
    ANIMATIONS AU SCROLL
    ================================================ */
 .fade-in {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease;
+    * {
+        /*will-change: opacity, transform;*/
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
 }
 
 .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
+    * {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ================================================
@@ -851,5 +1033,180 @@
 
     .section-title {
         font-size: 2rem;
+    }
+}
+
+/* ================================================
+   POPUP PROJET
+   ================================================ */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.popup.show {
+    display: flex;
+}
+
+.popup_content {
+    background: var(--bg-color);
+    border-radius: 16px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    animation: popupSlideIn 0.3s ease;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.popup_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.popup_title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.popup_close {
+    font-size: 2rem;
+    color: var(--text-light);
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.popup_close:hover {
+    color: var(--primary-color);
+}
+
+.popup_body {
+    padding: 2rem;
+}
+
+.popup-images {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.popup-images img {
+    max-height: 250px;
+    width: auto;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.popup-images::-webkit-scrollbar {
+    height: 6px;
+}
+
+.popup-images::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.popup-images::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.popup-description {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    white-space: pre-line;
+}
+
+.popup-techs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.popup-tech-tag {
+    padding: 0.4rem 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.popup-link {
+    margin-top: 1rem;
+}
+
+.popup-project-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.popup-project-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.popup-project-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 768px) {
+    .popup_content {
+        max-height: 95vh;
+        margin: 0.5rem;
+    }
+    
+    .popup_header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .popup_body {
+        padding: 1.25rem;
+    }
+    
+    .popup-images img {
+        max-height: 180px;
     }
 }

@@ -125,7 +125,7 @@ class CompetenceController extends Controller
         $categories = $l_oStmtCat->fetchAll(PDO::FETCH_ASSOC);
         
         // Récupérer les compétences avec leurs technos
-        $l_sSql = 'SELECT c.category_id, t.libelle, t.color 
+        $l_sSql = 'SELECT c.category_id, t.code, t.libelle, t.color 
                    FROM Competence c 
                    JOIN TechnoProject t ON c.techno_code = t.code 
                    ORDER BY t.libelle ASC';

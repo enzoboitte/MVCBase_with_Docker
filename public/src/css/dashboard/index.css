@@ -58,7 +58,8 @@
 }
 
 /* Design Formulaire and Table with attribute data-api-endpoint */
-form[data-api-endpoint], table[data-api-endpoint] {
+form[data-api-endpoint], table[data-api-endpoint],
+.dashboard form {
     padding: 20px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -66,7 +67,8 @@ form[data-api-endpoint], table[data-api-endpoint] {
     width: 100%;
 }
 
-form[data-api-endpoint] label {
+form[data-api-endpoint] label,
+.dashboard form label {
     display: block;
     margin-bottom: 6px;
     font-size: 0.875rem;
@@ -76,7 +78,10 @@ form[data-api-endpoint] label {
 
 form[data-api-endpoint] input,
 form[data-api-endpoint] textarea,
-form[data-api-endpoint] select {
+form[data-api-endpoint] select,
+.dashboard form input,
+.dashboard form textarea,
+.dashboard form select {
     display: block;
     width: 100%;
     margin-bottom: 16px;
@@ -91,13 +96,17 @@ form[data-api-endpoint] select {
 
 form[data-api-endpoint] input:focus,
 form[data-api-endpoint] textarea:focus,
-form[data-api-endpoint] select:focus {
+form[data-api-endpoint] select:focus,
+.dashboard form input:focus,
+.dashboard form textarea:focus,
+.dashboard form select:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-form[data-api-endpoint] button {
+form[data-api-endpoint] button,
+.dashboard form button {
     display: inline-block;
     padding: 10px 20px;
     background-color: var(--primary-color);
@@ -110,7 +119,8 @@ form[data-api-endpoint] button {
     transition: background-color 0.2s ease;
 }
 
-form[data-api-endpoint] button:hover {
+form[data-api-endpoint] button:hover,
+.dashboard form button:hover {
     background-color: var(--primary-dark);
 }
 

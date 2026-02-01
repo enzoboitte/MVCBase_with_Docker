@@ -80,4 +80,24 @@ class DashboardController extends Controller
             'competenceId' => $id
         ]);
     }
+
+
+    #[CRoute('/dashboard/projects', CHTTPMethod::GET)]
+    public function projects(): void
+    {
+        $this->view('dashboard/project', [
+            'back' => '/dashboard',
+            'title' => 'Tableau de bord - Projets'
+        ]);
+    }
+
+    #[CRoute('/dashboard/projects/edit/{id}', CHTTPMethod::GET)]
+    public function editProject(string $id): void
+    {
+        $this->view('dashboard/edit_project', [
+            'back' => '/dashboard/projects',
+            'title' => 'Tableau de bord - Modifier Projet',
+            'projectId' => $id
+        ]);
+    }
 }

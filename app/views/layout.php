@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'MVC PHP' ?></title>
     <link rel="stylesheet" href="/public/src/css/style.css">
-    <?php if (isset($customCss)): ?>
-    <link rel="stylesheet" href="<?= $customCss ?>">
-    <?php endif; ?>
+    <?php if (isset($customCss)):
+        if (is_array($customCss)):
+            foreach ($customCss as $cssPath): ?>
+                <link rel="stylesheet" href="<?= $cssPath ?>">
+            <?php endforeach;
+        else: ?>
+            <link rel="stylesheet" href="<?= $customCss ?>">
+        <?php endif;
+    endif; ?>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
