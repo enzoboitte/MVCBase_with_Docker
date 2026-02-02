@@ -217,12 +217,15 @@ function openPopup(id)
     {
         popup.classList.add('show');
 
+        document.body.style.overflow = 'hidden';
+
         const closeBtn = popup.querySelector(`#${id} .popup_close`);
         if(closeBtn)
         {
             closeBtn.addEventListener('click', () => 
             {
                 popup.classList.remove('show');
+                document.body.style.overflow = 'auto';
             });
         }
 
@@ -232,6 +235,7 @@ function openPopup(id)
             if(event.target === popup)
             {
                 popup.classList.remove('show');
+                document.body.style.overflow = 'auto';
             }
         });
     }

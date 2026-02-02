@@ -90,10 +90,15 @@
             <span class="popup_close">&times;</span>
         </div>
         <div class="popup_body">
-            <div id="popup-project-images" class="popup-images"></div>
-            <p id="popup-project-description" class="popup-description"></p>
-            <div id="popup-project-techs" class="popup-techs"></div>
-            <div id="popup-project-link" class="popup-link"></div>
+            <div id="popup-project-images"></div>
+            <div class="popup-images-content">
+                <div id="popup-images-nav" class="popup-images-nav"></div>
+            </div>
+            <div class="popup-content-wrapper">
+                <p id="popup-project-description"></p>
+                <div id="popup-project-techs"></div>
+                <div id="popup-project-link"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -163,7 +168,7 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php 
-$customCss = '/public/src/css/home.css';
+$customCss = ['/public/src/css/home.css', '/public/src/css/home-popup.css'];
 $customJs = '/public/src/js/home.js';
 $bodyClass = 'home-page';
 require ROOT . '/app/views/layout.php'; 

@@ -156,7 +156,7 @@
     font-size: 0.85rem;
     color: var(--text-light);
     margin-bottom: 1.5rem;
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeInUp 0.3s ease forwards;
     opacity: 0;
 }
 
@@ -172,7 +172,7 @@
     color: var(--text-color);
     margin-bottom: 1.5rem;
     letter-spacing: -1px;
-    animation: fadeInUp 0.6s ease 0.1s forwards;
+    animation: fadeInUp 0.3s ease 0.1s forwards;
     opacity: 0;
 }
 
@@ -189,7 +189,7 @@
     max-width: 600px;
     margin: 0 auto 2.5rem;
     line-height: 1.7;
-    animation: fadeInUp 0.6s ease 0.2s forwards;
+    animation: fadeInUp 0.3s ease 0.2s forwards;
     opacity: 0;
 }
 
@@ -198,7 +198,7 @@
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
-    animation: fadeInUp 0.6s ease 0.3s forwards;
+    animation: fadeInUp 0.3s ease 0.3s forwards;
     opacity: 0;
 }
 
@@ -316,30 +316,14 @@
     padding: 2rem;
     border-radius: 16px;
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
     position: relative;
     overflow: hidden;
 }
 
-.skill-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
 .skill-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-}
-
-.skill-card:hover::before {
-    transform: scaleX(1);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
 }
 
 .skill-icon {
@@ -541,13 +525,15 @@
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    transition: all 0.6s ease;
     width: 400px;
 }
 
 .project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    /*transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);*/
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
 }
 
 .project-image {

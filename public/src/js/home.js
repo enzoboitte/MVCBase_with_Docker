@@ -256,7 +256,7 @@ async function initProjects()
                 
                 // Générer les tags technologies
                 const techTags = project.technologies.map(t => 
-                    `<span>${t.libelle}</span>`
+                    `<span class="skill-tag ${t.code}">${t.libelle}</span>`
                 ).join('');
                 
                 // Générer le lien avec l'icône appropriée
@@ -285,7 +285,7 @@ async function initProjects()
                     <div class="project-content">
                         <h3>${escapeHtml(project.name)}</h3>
                         <p>${escapeHtml(project.description)}</p>
-                        <div class="project-tech">
+                        <div class="skill-tags">
                             ${techTags || '<span>Aucune technologie</span>'}
                         </div>
                         ${linkHtml}
@@ -454,26 +454,71 @@ function openProjectPopup(project) {
     // Description
     document.getElementById('popup-project-description').textContent = project.description;
     
-    // Images (carrousel simple si plusieurs)
+    // Images (carrousel avec navigation)
     const imagesContainer = document.getElementById('popup-project-images');
+    const navContainer = document.getElementById('popup-images-nav');
+    
+    let allImages = [];
     if (project.images && project.images.length > 0) {
-        imagesContainer.innerHTML = project.images.map(img => 
-            `<img src="${img.image_path}" alt="${escapeHtml(project.name)}">`
+        allImages = project.images.map(img => img.image_path);
+    } else if (project.image) {
+        allImages = [project.image];
+    }
+    
+    if (allImages.length > 0) {
+        imagesContainer.innerHTML = allImages.map(imgPath => 
+            `<img src="${imgPath}" alt="${escapeHtml(project.name)}">`
         ).join('');
         imagesContainer.style.display = 'flex';
-    } else if (project.image) {
-        imagesContainer.innerHTML = `<img src="${project.image}" alt="${escapeHtml(project.name)}">`;
-        imagesContainer.style.display = 'flex';
+        
+        // Navigation par points si plusieurs images
+        if (allImages.length > 1) {
+            navContainer.innerHTML = allImages.map((_, i) => 
+                `<span class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`
+            ).join('');
+            navContainer.style.display = 'flex';
+            
+            // Click sur les dots pour naviguer
+            navContainer.querySelectorAll('.dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const index = parseInt(dot.dataset.index);
+                    const img = imagesContainer.querySelectorAll('img')[index];
+                    if (img) {
+                        img.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+                    }
+                    // Update active dot
+                    navContainer.querySelectorAll('.dot').forEach((d, i) => {
+                        d.classList.toggle('active', i === index);
+                    });
+                });
+            });
+            
+            // Observer le scroll pour mettre à jour les dots
+            imagesContainer.addEventListener('scroll', () => {
+                const scrollLeft = imagesContainer.scrollLeft;
+                const imgWidth = imagesContainer.offsetWidth;
+                const activeIndex = Math.round(scrollLeft / imgWidth);
+                navContainer.querySelectorAll('.dot').forEach((d, i) => {
+                    d.classList.toggle('active', i === activeIndex);
+                });
+            });
+        } else {
+            navContainer.innerHTML = '';
+            navContainer.style.display = 'none';
+        }
     } else {
         imagesContainer.innerHTML = '';
         imagesContainer.style.display = 'none';
+        navContainer.innerHTML = '';
+        navContainer.style.display = 'none';
     }
     
     // Technologies
     const techsContainer = document.getElementById('popup-project-techs');
     if (project.technologies && project.technologies.length > 0) {
+        techsContainer.classList.add('skill-tags');
         techsContainer.innerHTML = project.technologies.map(t => 
-            `<span class="popup-tech-tag" style="border-left: 3px solid ${t.color || '#2563eb'}">${t.libelle}</span>`
+            `<span class="skill-tag ${t.code}">${t.libelle}</span>`
         ).join('');
     } else {
         techsContainer.innerHTML = '';
@@ -484,7 +529,7 @@ function openProjectPopup(project) {
     if (project.link) {
         const linkInfo = getProjectLinkInfo(project.link);
         linkContainer.innerHTML = `
-            <a href="${escapeHtml(project.link)}" class="popup-project-btn" target="_blank" rel="noopener noreferrer">
+            <a href="${escapeHtml(project.link)}" class="project-link" target="_blank" rel="noopener noreferrer">
                 ${linkInfo.icon}
                 ${linkInfo.label}
             </a>
