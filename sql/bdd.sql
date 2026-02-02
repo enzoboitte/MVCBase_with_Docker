@@ -50,6 +50,22 @@ CREATE TABLE `TechnoLearn`(
     FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
+
+-- ADMIN TABLE
+CREATE TABLE `Admin`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(150) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+-- Créer un admin par défaut (mot de passe: admin123)
+INSERT INTO `Admin` (`email`, `password`, `name`) VALUES
+('admin@portfolio.local', '$2y$10$DCfP3XHMve74ydgi6V3ghOgR2fejcVyJcvc5bteck19UBvrfhyIbK', 'Administrateur');
+
+
 -- CONTACT TABLES
 CREATE TABLE `ContactMessage`(
     `id` INT NOT NULL AUTO_INCREMENT,

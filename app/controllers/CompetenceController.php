@@ -1,9 +1,11 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class CompetenceController extends Controller
 {
     // ==================== CATEGORIES ====================
     
+    #[CPublic]
     #[CRoute('/competence/category', CHTTPMethod::GET)]
     public function indexCategories(): void
     {
@@ -26,6 +28,7 @@ class CompetenceController extends Controller
         $this->json(["code" => (empty($l_aData) ? 404 : 200), "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/competence/category/{id}', CHTTPMethod::GET)]
     public function showCategory(string $id): void
     {
@@ -87,6 +90,7 @@ class CompetenceController extends Controller
 
     // ==================== COMPETENCES ====================
 
+    #[CPublic]
     #[CRoute('/competence', CHTTPMethod::GET)]
     public function index(): void
     {
@@ -113,6 +117,7 @@ class CompetenceController extends Controller
         $this->json(["code" => (empty($l_aData) ? 404 : 200), "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/competence/grouped', CHTTPMethod::GET)]
     public function groupedByCategory(): void
     {
@@ -148,6 +153,7 @@ class CompetenceController extends Controller
         $this->json(["code" => 200, "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/competence/technos/available', CHTTPMethod::GET)]
     public function availableTechnos(): void
     {
@@ -160,6 +166,7 @@ class CompetenceController extends Controller
         $this->json(["code" => 200, "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/competence/{id}', CHTTPMethod::GET)]
     public function show(string $id): void
     {

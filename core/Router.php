@@ -275,6 +275,24 @@ class CRoute
     ) {}
 }
 
+#[Attribute(Attribute::TARGET_CLASS)]
+class CMiddleware
+{
+    public function __construct(
+        public readonly array $middleware = [],
+    ) {}
+}
+
+/**
+ * Attribut pour exclure une méthode des middlewares de classe
+ * Rend la route publique (sans auth)
+ */
+#[Attribute(Attribute::TARGET_METHOD)]
+class CPublic
+{
+    public function __construct() {}
+}
+
 class RouteScanner
 {
     /**
@@ -304,16 +322,32 @@ class RouteScanner
     {
         $reflection = new ReflectionClass($className);
         
+        // Récupérer les middlewares de classe
+        $classMiddleware = [];
+        $classAttributes = $reflection->getAttributes(CMiddleware::class);
+        if (!empty($classAttributes)) {
+            $classMiddlewareAttr = $classAttributes[0]->newInstance();
+            $classMiddleware = $classMiddlewareAttr->middleware;
+        }
+        
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $attributes = $method->getAttributes(CRoute::class);
             
             foreach ($attributes as $attribute) {
                 $route = $attribute->newInstance();
+                
+                // Vérifier si la méthode est marquée comme publique
+                $isPublic = !empty($method->getAttributes(CPublic::class));
+                
+                // Fusionner les middlewares (sauf si route publique)
+                $middleware = $isPublic ? $route->middleware : array_merge($classMiddleware, $route->middleware);
+                
                 Router::addRoute(
                     $route->path,
                     $className,
                     $method->getName(),
-                    $route->method
+                    $route->method,
+                    $middleware
                 );
             }
         }

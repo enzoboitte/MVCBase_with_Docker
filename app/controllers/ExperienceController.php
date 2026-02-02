@@ -1,10 +1,12 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class ExperienceController extends Controller
 {
     /**
      * Liste toutes les expériences (format simple pour table dashboard)
      */
+    #[CPublic]
     #[CRoute('/experience', CHTTPMethod::GET)]
     public function index(): void
     {
@@ -56,6 +58,7 @@ class ExperienceController extends Controller
     /**
      * Liste simple pour le tableau dashboard
      */
+    #[CPublic]
     #[CRoute('/experience/list', CHTTPMethod::GET)]
     public function list(): void
     {
@@ -86,6 +89,7 @@ class ExperienceController extends Controller
     /**
      * Afficher une expérience spécifique
      */
+    #[CPublic]
     #[CRoute('/experience/{id}', CHTTPMethod::GET)]
     public function show(string $id): void
     {
@@ -316,6 +320,7 @@ class ExperienceController extends Controller
     /**
      * Liste des types de contrat
      */
+    #[CPublic]
     #[CRoute('/contract-types', CHTTPMethod::GET)]
     public function contractTypes(): void
     {

@@ -1,7 +1,9 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class TechnoController extends Controller
 {
+    #[CPublic]
     #[CRoute('/techno', CHTTPMethod::GET)]
     public function index(): void
     {
@@ -24,6 +26,7 @@ class TechnoController extends Controller
         $this->json(["code" => (empty($l_aData) ? 404 : 200), "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/techno/{code}', CHTTPMethod::GET)]
     public function show(string $code): void
     {

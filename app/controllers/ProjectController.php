@@ -1,10 +1,12 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class ProjectController extends Controller
 {
     /**
      * Liste tous les projets (format simple pour table dashboard)
      */
+    #[CPublic]
     #[CRoute('/project', CHTTPMethod::GET)]
     public function index(): void
     {
@@ -32,6 +34,7 @@ class ProjectController extends Controller
     /**
      * Liste tous les projets avec détails complets (pour la page home)
      */
+    #[CPublic]
     #[CRoute('/project/full', CHTTPMethod::GET)]
     public function indexFull(): void
     {
@@ -81,6 +84,7 @@ class ProjectController extends Controller
     /**
      * Afficher un projet spécifique
      */
+    #[CPublic]
     #[CRoute('/project/{id}', CHTTPMethod::GET)]
     public function show(string $id): void
     {

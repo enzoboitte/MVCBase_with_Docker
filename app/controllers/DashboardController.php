@@ -1,5 +1,6 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class DashboardController extends Controller
 {
     #[CRoute('/dashboard', CHTTPMethod::GET)]
@@ -118,6 +119,25 @@ class DashboardController extends Controller
             'back' => '/dashboard/experiences',
             'title' => 'Tableau de bord - Modifier Expérience',
             'experienceId' => $id
+        ]);
+    }
+
+    #[CRoute('/dashboard/users', CHTTPMethod::GET)]
+    public function users(): void
+    {
+        $this->view('dashboard/user', [
+            'back' => '/dashboard',
+            'title' => 'Tableau de bord - Utilisateurs'
+        ]);
+    }
+
+    #[CRoute('/dashboard/users/edit/{id}', CHTTPMethod::GET)]
+    public function editUser(string $id): void
+    {
+        $this->view('dashboard/edit_user', [
+            'back' => '/dashboard/users',
+            'title' => 'Tableau de bord - Modifier Utilisateur',
+            'userId' => $id
         ]);
     }
 }

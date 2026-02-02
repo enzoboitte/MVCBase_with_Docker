@@ -1,5 +1,6 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class ContactController extends Controller
 {
     #[CRoute('/contact', CHTTPMethod::GET)]
@@ -33,6 +34,7 @@ class ContactController extends Controller
         $this->json(["code" => (empty($l_aData) ? 404 : 200), "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/contact', CHTTPMethod::POST)]
     public function create(): void
     {

@@ -1,7 +1,9 @@
 <?php
 
+#[CMiddleware(middleware: ['auth'])]
 class DiplomaController extends Controller
 {
+    #[CPublic]
     #[CRoute('/diploma', CHTTPMethod::GET)]
     public function index(): void
     {
@@ -27,6 +29,7 @@ class DiplomaController extends Controller
         $this->json(["code" => (empty($l_aData) ? 404 : 200), "data" => $l_aData]);
     }
 
+    #[CPublic]
     #[CRoute('/diploma/{id}', CHTTPMethod::GET)]
     public function show(string $id): void
     {
