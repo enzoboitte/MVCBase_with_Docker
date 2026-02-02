@@ -7,6 +7,7 @@
         <ul class="navbar-links">
             <li><a href="#skills">Compétences</a></li>
             <li><a href="#education">Parcours</a></li>
+            <li><a href="#experience">Expériences</a></li>
             <li><a href="#projects">Projets</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -69,6 +70,20 @@
         <!-- Les diplômes seront chargés dynamiquement -->
     </div>
 </section>
+
+<!-- Experience Section -->
+<div class="experience-section">
+    <section id="experience" class="section">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Expériences Professionnelles</h2>
+            <p class="section-subtitle">Mon parcours professionnel et mes missions en entreprise.</p>
+        </div>
+        
+        <div class="experience-list" id="experience-list">
+            <!-- Les expériences seront chargées dynamiquement -->
+        </div>
+    </section>
+</div>
 
 <!-- Projects Section -->
 <section id="projects" class="section">

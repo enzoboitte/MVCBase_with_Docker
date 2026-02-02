@@ -95,6 +95,55 @@ CREATE TABLE `Competence`(
     FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
+
+-- EXPERIENCE TABLES
+CREATE TABLE `TypeContract`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `contract_type` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+CREATE TABLE `Experience`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(150) NOT NULL,
+    `company` VARCHAR(100) NOT NULL,
+    `location` VARCHAR(100) NOT NULL,
+    `contract_type_id` INT NOT NULL,
+    `start_date` VARCHAR(7) NOT NULL,
+    `end_date` VARCHAR(7) NULL,
+    `description` TEXT NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`contract_type_id`) REFERENCES `TypeContract`(`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE `UseTechnoExperience`(
+    `experience_id` INT NOT NULL,
+    `techno_code` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`experience_id`, `techno_code`),
+    FOREIGN KEY (`experience_id`) REFERENCES `Experience`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE `TaskExperience`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `experience_id` INT NOT NULL,
+    `task_description` TEXT NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`experience_id`) REFERENCES `Experience`(`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- INSERT INITIAL DATA FOR EXPERIENCES (EXAMPLE)
+INSERT INTO `TypeContract` (`contract_type`) VALUES
+('CDI'),
+('CDD'),
+('Stage'),
+('Freelance'),
+('Alternance'),
+('Temps plein'),
+('Temps partiel'),
+('Intérim'),
+('Bénévolat');
+
 -- INSERT INITIAL COMPETENCE CATEGORIES
 INSERT INTO `CompetenceCategory` (`name`, `description`, `icon`) VALUES
 ('Front-End', 'Technologies et frameworks pour le développement côté client', 'fa-desktop'),

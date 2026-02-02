@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initCompetences();
     initDiplomas();
+    initExperiences();
     initProjects();
 });
 
@@ -232,6 +233,144 @@ async function initDiplomas()
     } catch (error) {
         console.error('Failed to load education:', error);
     }
+}
+
+/**
+ * Chargement dynamique des expériences professionnelles
+ */
+async function initExperiences() 
+{
+    try {
+        const response = await fetch('/experience');
+        const result = await response.json();
+        
+        const container = document.getElementById('experience-list');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (result.data && result.data.length > 0) {
+            result.data.forEach((exp, index) => {
+                const card = document.createElement('div');
+                card.className = 'experience-card fade-in visible';
+                card.style.animationDelay = `${index * 0.15}s`;
+                
+                // Formater les dates
+                const startDate = formatDate(exp.start_at);
+                const endDate = exp.end_at ? formatDate(exp.end_at) : 'Présent';
+                const duration = calculateDuration(exp.start_at, exp.end_at);
+                
+                // Générer les tâches/missions
+                const tasksHtml = exp.tasks && exp.tasks.length > 0 ? `
+                    <div class="experience-tasks">
+                        <h4>Missions principales</h4>
+                        <ul>
+                            ${exp.tasks.map(task => `<li>${escapeHtml(task)}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+                
+                // Générer les compétences
+                const skillsHtml = exp.skills && exp.skills.length > 0 ? `
+                    <div class="experience-skills">
+                        ${exp.skills.map(skill => `<span class="experience-skill">${escapeHtml(skill)}</span>`).join('')}
+                    </div>
+                ` : '';
+                
+                // Logo de l'entreprise ou icône par défaut
+                const logoHtml = exp.logo 
+                    ? `<img src="${exp.logo}" alt="${escapeHtml(exp.company)}">`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`;
+                
+                codeHTML = `
+                    <div class="experience-header">
+                        <div class="experience-logo">
+                            ${logoHtml}
+                        </div>
+                        <div class="experience-info">
+                            <h3 class="experience-title">${escapeHtml(exp.title)}</h3>
+                            <div class="experience-company">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                ${escapeHtml(exp.company)}
+                            </div>
+                            <div class="experience-meta">
+                                <div class="experience-meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    ${startDate} - ${endDate} ${duration ? `(${duration})` : ''}
+                                </div>
+                                ${exp.location ? `
+                                <div class="experience-meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    ${escapeHtml(exp.location)}
+                                </div>
+                                ` : ''}
+                                ${exp.type ? `<span class="experience-type">${escapeHtml(exp.type)}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                if(exp.description || tasksHtml || skillsHtml)
+                    codeHTML += `
+                        <div class="experience-body">
+                            ${exp.description ? `<p class="experience-description">${escapeHtml(exp.description)}</p>` : ''}
+                            ${tasksHtml}
+                            ${skillsHtml}
+                        </div>
+                    `;
+
+                card.innerHTML = codeHTML;
+                
+                container.appendChild(card);
+            });
+        } else {
+            // Message si pas d'expériences
+            container.innerHTML = `
+                <div class="experience-card fade-in visible">
+                    <div class="experience-header">
+                        <div class="experience-logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        </div>
+                        <div class="experience-info">
+                            <h3 class="experience-title">Expériences à venir</h3>
+                            <div class="experience-company">En recherche d'opportunités</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Failed to load experiences:', error);
+    }
+}
+
+/**
+ * Formate une date au format "Mois Année"
+ */
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    return `${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+/**
+ * Calcule la durée entre deux dates
+ */
+function calculateDuration(startAt, endAt) {
+    const start = new Date(startAt);
+    const end = endAt ? new Date(endAt) : new Date();
+    
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    
+    if (months < 1) return '';
+    if (months < 12) return `${months} mois`;
+    
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+    
+    if (remainingMonths === 0) return `${years} an${years > 1 ? 's' : ''}`;
+    return `${years} an${years > 1 ? 's' : ''} ${remainingMonths} mois`;
 }
 
 /**

@@ -2,21 +2,13 @@
 
 class UserController extends Controller
 {
-    #[CRoute('/user/{id}', CHTTPMethod::GET)]
-    public function show(string $id): void
+    #[CRoute('/connection', CHTTPMethod::GET)]
+    public function connection(): void
     {
-        $this->json([
-            'userId' => $id,
-            'name' => 'Utilisateur ' . $id
-        ]);
-}
-
-    #[CRoute('/user/{id}/edit', CHTTPMethod::GET)]
-    public function edit(string $id): void
-    {
-        $this->view('user/edit', [
-            'title' => 'Modifier utilisateur',
-            'userId' => $id
+        $this->view('user/connection', [
+            'back' => '/',
+            'title' => 'Connexion'
         ]);
     }
+    
 }

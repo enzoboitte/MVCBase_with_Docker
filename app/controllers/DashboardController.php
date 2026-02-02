@@ -100,4 +100,24 @@ class DashboardController extends Controller
             'projectId' => $id
         ]);
     }
+
+
+    #[CRoute('/dashboard/experiences', CHTTPMethod::GET)]
+    public function experiences(): void
+    {
+        $this->view('dashboard/experience', [
+            'back' => '/dashboard',
+            'title' => 'Tableau de bord - Expériences'
+        ]);
+    }
+
+    #[CRoute('/dashboard/experiences/edit/{id}', CHTTPMethod::GET)]
+    public function editExperience(string $id): void
+    {
+        $this->view('dashboard/edit_experience', [
+            'back' => '/dashboard/experiences',
+            'title' => 'Tableau de bord - Modifier Expérience',
+            'experienceId' => $id
+        ]);
+    }
 }

@@ -25,7 +25,8 @@ spl_autoload_register(function ($class) {
     $paths = [
         ROOT . '/app/controllers/',
         ROOT . '/app/models/',
-        ROOT . '/core/'
+        ROOT . '/core/',
+        ROOT . '/core/middleware/'
     ];
     
     foreach ($paths as $path) {
@@ -39,6 +40,25 @@ spl_autoload_register(function ($class) {
 
 // Charger le Router (nécessaire pour CRoute et RouteScanner)
 require_once ROOT . '/core/Router.php';
+
+// ============================================
+// CONFIGURATION DES MIDDLEWARES
+// ============================================
+
+// Enregistrer les alias de middlewares
+Router::aliasMiddleware('auth', AuthMiddleware::class);
+Router::aliasMiddleware('role', RoleMiddleware::class);
+Router::aliasMiddleware('cors', CorsMiddleware::class);
+Router::aliasMiddleware('throttle', ThrottleMiddleware::class);
+Router::aliasMiddleware('log', LogMiddleware::class);
+
+// Ajouter des middlewares globaux (exécutés sur toutes les routes)
+// Router::addGlobalMiddleware(CorsMiddleware::class);
+// Router::addGlobalMiddleware(LogMiddleware::class);
+
+// ============================================
+// LANCEMENT DE L'APPLICATION
+// ============================================
 
 // Scanner automatiquement les contrôleurs pour les attributs CRoute
 RouteScanner::scan(ROOT . '/app/controllers');
