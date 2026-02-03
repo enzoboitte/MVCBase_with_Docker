@@ -165,9 +165,9 @@ class Router
             }
         }
 
-        // 404
-        http_response_code(404);
-        echo "Page non trouvée";
+        // Redirection /
+        header("Location: /");
+        exit;
     }
 
     /**

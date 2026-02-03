@@ -1,4 +1,4 @@
--- MAIN DATABASE OF THE PORTFOLIO APPLICATION
+-- MAIN DATABASE OF THE FINANCE APPLICATION
 
 -- Drop the database if it exists and create a new one
 DROP DATABASE IF EXISTS `portfolio`;
@@ -9,50 +9,8 @@ CREATE DATABASE IF NOT EXISTS `portfolio` DEFAULT CHARACTER SET utf8mb4 COLLATE 
 USE `portfolio`;
 
 
--- PROJECT TABLES
-CREATE TABLE `TechnoProject`(
-    `code` VARCHAR(20) NOT NULL,
-    `libelle` VARCHAR(35) NOT NULL,
-    `color` VARCHAR(10) NOT NULL,
-    PRIMARY KEY (`code`)
-) ENGINE = InnoDB;
-
-CREATE TABLE `Project`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(70) NOT NULL,
-    `description` TEXT NOT NULL,
-    `link` VARCHAR(255) NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
-
-CREATE TABLE `ImageProject`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `project_id` INT NOT NULL,
-    `image_path` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`project_id`) REFERENCES `Project`(`id`) ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-CREATE TABLE `HaveProject`(
-    `project_id` INT NOT NULL,
-    `techno_code` VARCHAR(20) NOT NULL,
-    PRIMARY KEY (`project_id`, `techno_code`),
-    FOREIGN KEY (`project_id`) REFERENCES `Project`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-
--- TECHNO LEARN TABLES
-CREATE TABLE `TechnoLearn`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `techno_code` VARCHAR(20) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-
--- ADMIN TABLE
-CREATE TABLE `Admin`(
+-- ADMIN TABLE (Users)
+CREATE TABLE `Admin` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(150) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
@@ -63,222 +21,132 @@ CREATE TABLE `Admin`(
 
 -- Créer un admin par défaut (mot de passe: admin123)
 INSERT INTO `Admin` (`email`, `password`, `name`) VALUES
-('admin@portfolio.local', '$2y$10$DCfP3XHMve74ydgi6V3ghOgR2fejcVyJcvc5bteck19UBvrfhyIbK', 'Administrateur');
+('admin@finance.local', '$2y$10$DCfP3XHMve74ydgi6V3ghOgR2fejcVyJcvc5bteck19UBvrfhyIbK', 'Administrateur');
 
 
--- CONTACT TABLES
-CREATE TABLE `ContactMessage`(
+-- ACCOUNTS TABLE (Multi-comptes & Cash)
+CREATE TABLE `Account` (
     `id` INT NOT NULL AUTO_INCREMENT,
+    `user_id` INT NOT NULL,
     `name` VARCHAR(100) NOT NULL,
-    `email` VARCHAR(150) NOT NULL,
-    `subject` VARCHAR(150) NOT NULL,
-    `message` TEXT NOT NULL,
-    `status` ENUM('new', 'read') DEFAULT 'new',
-    `pin` ENUM('normal', 'favorite', 'archived') DEFAULT 'normal',
+    `type` ENUM('checking', 'savings', 'cash', 'credit_card') NOT NULL DEFAULT 'checking',
+    `current_balance` DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+    `icon` VARCHAR(50) DEFAULT 'fa-university',
+    `color` VARCHAR(10) DEFAULT '#2563eb',
+    `include_in_net_worth` BOOLEAN DEFAULT TRUE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
-
-
--- DIPLOMA TABLES
-CREATE TABLE `Diploma`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(150) NOT NULL,
-    `description` TEXT NOT NULL,
-    `school` VARCHAR(100) NOT NULL,
-    `country` VARCHAR(100) NOT NULL,
-    `start_date` VARCHAR(4) NOT NULL,
-    `end_date` VARCHAR(4) NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
-
-
--- COMPETENCE TABLES (Front-End, Back-End, DevOps)
-CREATE TABLE `CompetenceCategory`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `description` TEXT NULL,
-    `icon` VARCHAR(50) NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
-
-CREATE TABLE `Competence`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `category_id` INT NOT NULL,
-    `techno_code` VARCHAR(20) NOT NULL,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`category_id`) REFERENCES `CompetenceCategory`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
+    FOREIGN KEY (`user_id`) REFERENCES `Admin`(`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
+-- Comptes par défaut
+INSERT INTO `Account` (`user_id`, `name`, `type`, `current_balance`, `icon`, `color`) VALUES
+(1, 'Compte Courant', 'checking', 2500.00, 'fa-university', '#2563eb'),
+(1, 'Livret A', 'savings', 5000.00, 'fa-piggy-bank', '#22c55e'),
+(1, 'Cash', 'cash', 150.00, 'fa-money', '#f59e0b');
 
--- EXPERIENCE TABLES
-CREATE TABLE `TypeContract`(
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `contract_type` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
 
-CREATE TABLE `Experience`(
+-- CATEGORIES TABLE
+CREATE TABLE `Category` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `title` VARCHAR(150) NOT NULL,
-    `company` VARCHAR(100) NOT NULL,
-    `location` VARCHAR(100) NOT NULL,
-    `contract_type_id` INT NOT NULL,
-    `start_date` VARCHAR(7) NOT NULL,
-    `end_date` VARCHAR(7) NULL,
-    `description` TEXT NOT NULL,
+    `user_id` INT NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `type` ENUM('income', 'expense') NOT NULL DEFAULT 'expense',
+    `icon` VARCHAR(50) DEFAULT 'fa-tag',
+    `color` VARCHAR(10) DEFAULT '#64748b',
+    `budget_amount` DECIMAL(12, 2) DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`contract_type_id`) REFERENCES `TypeContract`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`user_id`) REFERENCES `Admin`(`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
-CREATE TABLE `UseTechnoExperience`(
-    `experience_id` INT NOT NULL,
-    `techno_code` VARCHAR(20) NOT NULL,
-    PRIMARY KEY (`experience_id`, `techno_code`),
-    FOREIGN KEY (`experience_id`) REFERENCES `Experience`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`techno_code`) REFERENCES `TechnoProject`(`code`) ON DELETE CASCADE
-) ENGINE = InnoDB;
+-- Catégories par défaut
+INSERT INTO `Category` (`user_id`, `name`, `type`, `icon`, `color`, `budget_amount`) VALUES
+-- Dépenses
+(1, 'Alimentation', 'expense', 'fa-shopping-cart', '#ef4444', 400.00),
+(1, 'Transport', 'expense', 'fa-car', '#f97316', 150.00),
+(1, 'Logement', 'expense', 'fa-home', '#8b5cf6', NULL),
+(1, 'Loisirs', 'expense', 'fa-gamepad', '#ec4899', 200.00),
+(1, 'Santé', 'expense', 'fa-medkit', '#14b8a6', NULL),
+(1, 'Shopping', 'expense', 'fa-shopping-bag', '#f59e0b', 100.00),
+(1, 'Abonnements', 'expense', 'fa-repeat', '#6366f1', NULL),
+(1, 'Restaurant', 'expense', 'fa-cutlery', '#ea580c', 100.00),
+(1, 'Factures', 'expense', 'fa-file-text', '#64748b', NULL),
+-- Revenus
+(1, 'Salaire', 'income', 'fa-briefcase', '#22c55e', NULL),
+(1, 'Freelance', 'income', 'fa-laptop', '#10b981', NULL),
+(1, 'Investissements', 'income', 'fa-line-chart', '#059669', NULL),
+(1, 'Remboursements', 'income', 'fa-undo', '#34d399', NULL);
 
-CREATE TABLE `TaskExperience`(
+
+-- TRANSACTIONS TABLE
+CREATE TABLE `Transaction` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `experience_id` INT NOT NULL,
-    `task_description` TEXT NOT NULL,
+    `user_id` INT NOT NULL,
+    `account_id` INT NOT NULL,
+    `category_id` INT NULL,
+    `type` ENUM('income', 'expense', 'transfer') NOT NULL,
+    `amount` DECIMAL(12, 2) NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
+    `date` DATE NOT NULL,
+    `is_recurring` BOOLEAN DEFAULT FALSE,
+    `subscription_id` INT DEFAULT NULL,
+    `transfer_account_id` INT DEFAULT NULL,
+    `notes` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`experience_id`) REFERENCES `Experience`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`user_id`) REFERENCES `Admin`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`account_id`) REFERENCES `Account`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`transfer_account_id`) REFERENCES `Account`(`id`) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
--- INSERT INITIAL DATA FOR EXPERIENCES (EXAMPLE)
-INSERT INTO `TypeContract` (`contract_type`) VALUES
-('CDI'),
-('CDD'),
-('Stage'),
-('Freelance'),
-('Alternance'),
-('Temps plein'),
-('Temps partiel'),
-('Intérim'),
-('Bénévolat');
+-- Quelques transactions d'exemple
+INSERT INTO `Transaction` (`user_id`, `account_id`, `category_id`, `type`, `amount`, `description`, `date`) VALUES
+(1, 1, 10, 'income', 2800.00, 'Salaire Janvier', '2026-01-05'),
+(1, 1, 1, 'expense', 85.50, 'Courses Carrefour', '2026-01-10'),
+(1, 1, 3, 'expense', 850.00, 'Loyer Janvier', '2026-01-01'),
+(1, 1, 8, 'expense', 35.00, 'Restaurant Le Bistrot', '2026-01-15'),
+(1, 1, 2, 'expense', 50.00, 'Essence', '2026-01-12'),
+(1, 1, 10, 'income', 2800.00, 'Salaire Février', '2026-02-05'),
+(1, 1, 1, 'expense', 92.30, 'Courses Leclerc', '2026-02-03');
 
--- INSERT INITIAL COMPETENCE CATEGORIES
-INSERT INTO `CompetenceCategory` (`name`, `description`, `icon`) VALUES
-('Front-End', 'Technologies et frameworks pour le développement côté client', 'fa-desktop'),
-('Back-End', 'Technologies et frameworks pour le développement côté serveur', 'fa-server'),
-('DevOps', 'Outils et technologies pour le déploiement et l''infrastructure', 'fa-cogs');
 
--- INSERT INITIAL DATA FROM TECHNOLOGIES
-INSERT INTO `TechnoProject` (`code`, `libelle`, `color`) VALUES
-('ANDROID', 'Android', '#3ddc84'),
-('ANDROIDSTUDIO', 'Android Studio', '#3ddc84'),
-('ANGULAR', 'Angular', '#dd0031'),
-('ANSIBLE', 'Ansible', '#ee0000'),
-('APPCODE', 'AppCode', '#888888'),
-('ASSEMBLY', 'Assembly', '#808080'),
-('ATOM', 'Atom', '#66595c'),
-('BASH', 'Bash', '#4eaa25'),
-('BASIC', 'BASIC', '#ff4500'),
-('BITBUCKET', 'Bitbucket', '#0052cc'),
-('BLENDER', 'Blender', '#f5792a'),
-('BOOTSTRAP', 'Bootstrap', '#563d7c'),
-('BRACKETS', 'Brackets', '#3389de'),
-('C', 'C', '#a8b9cc'),
-('CHEF', 'Chef', '#f14f2e'),
-('CLION', 'CLion', '#00599c'),
-('CLOJURE', 'Clojure', '#5881d8'),
-('COBOL', 'COBOL', '#005f9e'),
-('CONFLUENCE', 'Confluence', '#172b4d'),
-('CPP', 'C++', '#00599c'),
-('CSHARP', 'C#', '#68217a'),
-('CSS', 'CSS', '#264de4'),
-('DART', 'Dart', '#0175c2'),
-('DATAGRIP', 'DataGrip', '#512bd4'),
-('DOCKER', 'Docker', '#2496ed'),
-('DOTNET', '.NET', '#512bd4'),
-('ECLIPSE', 'Eclipse', '#2c2255'),
-('ELIXIR', 'Elixir', '#6e4a7e'),
-('ELK', 'ELK Stack', '#005571'),
-('EMACS', 'Emacs', '#7f5ab6'),
-('ERLANG', 'Erlang', '#a90533'),
-('EXPRESS', 'Express.js', '#404040'),
-('FIGMA', 'Figma', '#0acf83'),
-('FILEZILLA', 'FileZilla', '#bf0000'),
-('FIREBASE', 'Firebase', '#ffca28'),
-('FLUTTER', 'Flutter', '#02569b'),
-('FORTRAN', 'Fortran', '#4d41b1'),
-('GIMP', 'GIMP', '#5c5543'),
-('GIT', 'Git', '#f34f29'),
-('GITHUB', 'GitHub', '#181717'),
-('GITLAB', 'GitLab', '#fc6d26'),
-('GO', 'Go', '#00add8'),
-('GOLAND', 'GoLand', '#00add8'),
-('GRAFANA', 'Grafana', '#f46800'),
-('HASKELL', 'Haskell', '#5e5086'),
-('HEROKU', 'Heroku', '#6762a6'),
-('HTML', 'HTML', '#e34c26'),
-('ILLUSTRATOR', 'Illustrator', '#ff7f00'),
-('INKSCAPE', 'Inkscape', '#000000'),
-('INTELLIJ', 'IntelliJ IDEA', '#000080'),
-('IOS', 'iOS', '#888888'),
-('JAVA', 'Java', '#007396'),
-('JENKINS', 'Jenkins', '#d24939'),
-('JIRA', 'Jira', '#0052cc'),
-('JQUERY', 'jQuery', '#0868ac'),
-('JS', 'JavaScript', '#f0db4f'),
-('KOTLIN', 'Kotlin', '#0095d5'),
-('KUBERNETES', 'Kubernetes', '#326ce5'),
-('LARAVEL', 'Laravel', '#ff2d20'),
-('LINUX', 'Linux', '#f5a442'),
-('LUA', 'Lua', '#000080'),
-('MACOS', 'macOS', '#6e6e6e'),
-('MONGO', 'MongoDB', '#4db33d'),
-('MYSQL', 'MySQL', '#4479a1'),
-('NAGIOS', 'Nagios', '#cc0000'),
-('NETBEANS', 'NetBeans', '#1b6ac6'),
-('NODE', 'Node.js', '#68a063'),
-('OBJECTIVEC', 'Objective-C', '#686868'),
-('PERL', 'Perl', '#39457e'),
-('PHOTOSHOP', 'Photoshop', '#31a8ff'),
-('PHP', 'PHP', '#8892be'),
-('PHPSTORM', 'PhpStorm', '#8892be'),
-('POSTGRESQL', 'PostgreSQL', '#336791'),
-('POWERSHELL', 'PowerShell', '#012456'),
-('PROMETHEUS', 'Prometheus', '#e6522c'),
-('PUPPET', 'Puppet', '#302b6d'),
-('PUTTY', 'PuTTY', '#000080'),
-('PYCHARM', 'PyCharm', '#4caf50'),
-('PYTHON', 'Python', '#306998'),
-('R', 'R', '#276dc3'),
-('RAILS', 'Ruby on Rails', '#cc0000'),
-('REACT', 'React', '#61dafb'),
-('RIDER', 'Rider', '#68217a'),
-('RUBY', 'Ruby', '#cc342d'),
-('RUBYMINE', 'RubyMine', '#cc342d'),
-('RUST', 'Rust', '#dea584'),
-('SALTSTACK', 'SaltStack', '#d79a23'),
-('SASS', 'Sass', '#cc6699'),
-('SCALA', 'Scala', '#c22d40'),
-('SHELL', 'Shell', '#89e051'),
-('SOCKETIO', 'Socket.IO', '#010101'),
-('SQL', 'SQL', '#4479a1'),
-('SQLITE', 'SQLite', '#003b57'),
-('SSH', 'SSH', '#d0d0d0'),
-('SUBLIME', 'Sublime Text', '#ff9800'),
-('SWIFT', 'Swift', '#ffac45'),
-('SYMFONY', 'Symfony', '#111111'),
-('TERRAFORM', 'Terraform', '#623ce4'),
-('TRELLO', 'Trello', '#0079bf'),
-('TYPESCRIPT', 'TypeScript', '#007acc'),
-('UNITY', 'Unity', '#000000'),
-('VIM', 'Vim', '#019733'),
-('VIRTUALBOX', 'VirtualBox', '#183a61'),
-('VISUALSTUDIO', 'Visual Studio', '#68217a'),
-('VMWARE', 'VMware', '#607078'),
-('VSCODE', 'Visual Studio Code', '#0078d7'),
-('VUE', 'Vue.js', '#42b883'),
-('WEBSTORM', 'WebStorm', '#000080'),
-('WINDOWS', 'Windows', '#0078d7'),
-('WINSCP', 'WinSCP', '#4e9a06'),
-('WORDPRESS', 'WordPress', '#21759b'),
-('XCODE', 'Xcode', '#147efb'),
-('XD', 'Adobe XD', '#ff61f6'),
-('ZABBIX', 'Zabbix', '#ff0000');
+-- SUBSCRIPTIONS TABLE (Abonnements & Récurrents)
+CREATE TABLE `Subscription` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `user_id` INT NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `amount` DECIMAL(12, 2) NOT NULL,
+    `category_id` INT NULL,
+    `account_id` INT NOT NULL,
+    `type` ENUM('income', 'expense') NOT NULL DEFAULT 'expense',
+    `frequency` ENUM('daily', 'weekly', 'monthly', 'yearly') NOT NULL DEFAULT 'monthly',
+    `next_due_date` DATE NOT NULL,
+    `is_active` BOOLEAN DEFAULT TRUE,
+    `auto_renew` BOOLEAN DEFAULT TRUE,
+    `icon` VARCHAR(50) DEFAULT 'fa-repeat',
+    `color` VARCHAR(10) DEFAULT '#6366f1',
+    `notes` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `Admin`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`account_id`) REFERENCES `Account`(`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- Abonnements d'exemple
+INSERT INTO `Subscription` (`user_id`, `name`, `amount`, `category_id`, `account_id`, `type`, `frequency`, `next_due_date`, `icon`, `color`) VALUES
+-- Revenus récurrents
+(1, 'Salaire', 2800.00, 10, 1, 'income', 'monthly', '2026-02-05', 'fa-briefcase', '#22c55e'),
+-- Dépenses récurrentes
+(1, 'Loyer', 850.00, 3, 1, 'expense', 'monthly', '2026-02-01', 'fa-home', '#8b5cf6'),
+(1, 'Netflix', 17.99, 7, 1, 'expense', 'monthly', '2026-02-15', 'fa-film', '#e50914'),
+(1, 'Spotify', 10.99, 7, 1, 'expense', 'monthly', '2026-02-20', 'fa-music', '#1db954'),
+(1, 'Internet', 39.99, 9, 1, 'expense', 'monthly', '2026-02-10', 'fa-wifi', '#0ea5e9'),
+(1, 'Électricité', 75.00, 9, 1, 'expense', 'monthly', '2026-02-25', 'fa-bolt', '#eab308'),
+(1, 'Salle de sport', 29.99, 4, 1, 'expense', 'monthly', '2026-02-01', 'fa-heartbeat', '#ef4444'),
+(1, 'Assurance Auto', 450.00, 2, 1, 'expense', 'yearly', '2026-06-15', 'fa-car', '#f97316');

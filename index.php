@@ -4,7 +4,7 @@ define('ROOT', __DIR__);
 
 require_once ROOT . '/app/models/Model.php';
 
-$l_sBdd = getenv('DB_DATABASE') ?: 'portfolio';
+$l_sBdd = getenv('DB_DATABASE') ?: 'finance';
 $l_cCon = Model::getConnection();
 // si la BDD n'existe pas, la créer
 $sql = "SHOW DATABASES LIKE '$l_sBdd'";

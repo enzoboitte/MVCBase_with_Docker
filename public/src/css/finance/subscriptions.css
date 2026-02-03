@@ -1,0 +1,449 @@
+/* Subscriptions Page Styles */
+
+/* Stats Section */
+.subs-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--card-shadow);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    background: var(--border-color);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.view-toggle button {
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.view-toggle button.active {
+    background: var(--card-bg);
+    color: var(--primary-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Subscriptions Grid */
+.subscriptions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+.subscription-card {
+    background: var(--bg-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+}
+
+.subscription-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.subscription-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.subscription-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.subscription-info {
+    flex: 1;
+}
+
+.subscription-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.subscription-frequency {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.subscription-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-danger);
+}
+
+.subscription-details {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.subscription-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.subscription-detail-label {
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+
+.subscription-detail-value {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.subscription-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.subscription-actions button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-convert {
+    background: var(--color-success);
+    color: white;
+}
+
+.btn-convert:hover {
+    background: #16a34a;
+}
+
+.btn-edit-sub {
+    background: var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-edit-sub:hover {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.btn-delete-sub {
+    background: transparent;
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger) !important;
+}
+
+.btn-delete-sub:hover {
+    background: var(--color-danger);
+    color: white;
+}
+
+/* Badge */
+.subscription-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-active {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--color-success);
+}
+
+.badge-inactive {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--text-light);
+}
+
+/* Calendar */
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.calendar-nav button {
+    background: var(--border-color);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.calendar-nav button:hover {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.calendar-nav span {
+    font-weight: 600;
+    min-width: 150px;
+    text-align: center;
+}
+
+.calendar-container {
+    padding: 16px;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.calendar-day {
+    min-height: 100px;
+    padding: 8px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.calendar-day.other-month {
+    opacity: 0.4;
+    background: transparent;
+}
+
+.calendar-day.today {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+.day-number {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.day-events {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.day-event {
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    background: var(--color-danger);
+    color: white;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.day-event:hover {
+    opacity: 0.9;
+}
+
+/* Upcoming List */
+.upcoming-list {
+    padding: 16px;
+}
+
+.upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--bg-color);
+    margin-bottom: 8px;
+}
+
+.upcoming-item:last-child {
+    margin-bottom: 0;
+}
+
+.upcoming-date {
+    min-width: 60px;
+    text-align: center;
+    padding: 8px;
+    background: var(--primary-light);
+    border-radius: 8px;
+}
+
+.upcoming-date-day {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.upcoming-date-month {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+.upcoming-info {
+    flex: 1;
+}
+
+.upcoming-name {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.upcoming-account {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.upcoming-amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-danger);
+}
+
+.upcoming-action {
+    background: var(--color-success);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.upcoming-action:hover {
+    background: #16a34a;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .subs-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .subscriptions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .calendar-day {
+        min-height: 60px;
+        padding: 4px;
+    }
+    
+    .day-number {
+        font-size: 0.8rem;
+    }
+    
+    .day-event {
+        font-size: 0.65rem;
+    }
+    
+    .upcoming-item {
+        flex-wrap: wrap;
+    }
+    
+    .upcoming-action {
+        width: 100%;
+        margin-top: 8px;
+    }
+}

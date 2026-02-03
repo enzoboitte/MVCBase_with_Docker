@@ -1,0 +1,128 @@
+Spécifications Techniques V2 : Gestion Avancée
+
+1. Nouvelle Architecture des Données (Base de données)
+
+Pour gérer ces nouvelles fonctionnalités, nous devons ajouter deux tables majeures (Accounts, Subscriptions) et modifier la logique des transactions.
+
+A. Table Accounts (Multi-comptes & Cash)
+
+Cette table permet de séparer ton compte courant, ton livret d'épargne et ton argent liquide.
+
+id (PK)
+
+user_id (FK)
+
+name (Ex: "Boursorama", "Cash", "Livret A")
+
+type (Enum: 'checking', 'savings', 'cash', 'credit_card')
+
+current_balance (Le solde actuel, mis à jour à chaque transaction)
+
+include_in_net_worth (Boolean: pour savoir si ça compte dans ta richesse globale ou juste de la trésorerie)
+
+B. Table Subscriptions (Abonnements & Récurrents)
+
+Pour gérer Netflix, Loyer, Salaire, etc.
+
+id (PK)
+
+user_id (FK)
+
+name (Ex: "Spotify")
+
+amount
+
+category_id (FK)
+
+frequency (Enum: 'monthly', 'yearly', 'weekly')
+
+next_due_date (Date du prochain prélèvement)
+
+is_active (Boolean)
+
+auto_renew (Boolean)
+
+C. Mise à jour Transactions
+
+Ajout colonne account_id (FK vers Accounts) : Obligatoire.
+
+Ajout colonne is_recurring (Boolean) : Lié à un abonnement ?
+
+Ajout type transfer : En plus de 'income' et 'expense', il faut gérer les virements internes (Ex: Retrait DAB = Compte vers Cash). Les transferts ne doivent pas affecter les stats de "Dépenses".
+
+2. Logique de Prévision (Forecasting)
+
+La "Prévision fin de mois" est une fonctionnalité calculée (Backend ou Frontend).
+
+La Formule de projection :
+
+Solde Fin de Mois = Solde Actuel + Revenus Restants - Factures Fixes Restantes - Budget Variable Restant
+
+Revenus Restants : Somme des abonnements de type "Revenu" (ex: Salaire) dont la next_due_date est avant la fin du mois.
+
+Factures Fixes Restantes : Somme des abonnements "Dépense" (Loyer, Internet) non encore passés.
+
+Budget Variable Restant : (Budget Alimentation - Dépensé) + (Budget Loisir - Dépensé)... On prend une moyenne journalière pour estimer la suite.
+
+3. Mises à jour des Routes API
+
+A. Gestion des Comptes (/api/accounts)
+
+GET / : Liste les comptes avec leurs soldes respectifs.
+
+POST / : Créer un compte (Ex: "Caisse d'épargne").
+
+POST /transfer : Nouvelle route critique. Elle doit créer deux écritures : un débit sur le compte A et un crédit sur le compte B.
+
+B. Gestion des Abonnements (/api/subscriptions)
+
+GET / : Liste tous les abonnements actifs.
+
+GET /upcoming : Liste les échéances des 30 prochains jours (pour le calendrier).
+
+POST / : Créer un abonnement.
+
+POST /:id/convert-to-transaction : Quand une échéance arrive, l'utilisateur ou le système clique ici pour valider que le paiement est passé et créer la transaction réelle.
+
+C. Prévisions (/api/forecast)
+
+GET /current-month : Retourne un objet JSON complexe :
+
+{
+  "current_global_balance": 2500.00,
+  "days_remaining": 12,
+  "projected_income": 0,
+  "projected_fixed_costs": 800.00, // Loyer pas encore passé
+  "projected_variable_spend": 400.00, // Estimation bouffe/sorties
+  "estimated_end_balance": 1300.00,
+  "status": "safe" // ou "danger" si < 0
+}
+
+
+4. Nouvelles Pages Frontend
+
+Page "Comptes & Patrimoine" (/accounts)
+
+Visuel : Des cartes (Cards) pour chaque compte.
+
+Action : Un bouton "Virement interne" (Transfert) pour déplacer de l'argent du compte chèque vers le Cash ou l'Épargne sans que cela soit compté comme une dépense.
+
+KPI : Affichage du "Net Worth" (Total de tous les comptes).
+
+Page "Abonnements" (/subscriptions)
+
+Vue Liste : Tableau des abonnements avec colonnes : Nom, Montant, Prochaine date, Fréquence.
+
+Vue Calendrier : Un calendrier mensuel montrant les petits points de couleur aux dates de prélèvement.
+
+Fonction "Upcoming" : Une liste "À venir dans 7 jours".
+
+Mise à jour du Dashboard (/dashboard)
+
+Le composant "Météo Financière" :
+
+Une courbe qui part d'aujourd'hui et va jusqu'à la fin du mois.
+
+Ligne continue = Solde réel passé.
+
+Ligne pointillée = Prévision future basée sur les abonnements restants.
