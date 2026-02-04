@@ -169,13 +169,13 @@ class SubscriptionController extends Controller
             'user_id' => $userId,
             'name' => trim($input['name']),
             'amount' => abs(floatval($input['amount'])),
-            'category_id' => isset($input['category_id']) ? intval($input['category_id']) : null,
+            'category_id' => !empty($input['category_id']) ? intval($input['category_id']) : null,
             'account_id' => intval($input['account_id']),
             'type' => $input['type'] ?? 'expense',
             'frequency' => $input['frequency'] ?? 'monthly',
             'next_due_date' => $input['next_due_date'],
-            'is_active' => isset($input['is_active']) ? (bool)$input['is_active'] : true,
-            'auto_renew' => isset($input['auto_renew']) ? (bool)$input['auto_renew'] : true,
+            'is_active' => !empty($input['is_active']) ? 1 : 0,
+            'auto_renew' => isset($input['auto_renew']) ? ($input['auto_renew'] ? 1 : 0) : 1,
             'icon' => $input['icon'] ?? 'fa-repeat',
             'color' => $input['color'] ?? '#6366f1',
             'notes' => $input['notes'] ?? null
@@ -395,7 +395,10 @@ class SubscriptionController extends Controller
     {
         $this->view('finance/subscriptions', [
             'title' => 'Abonnements',
-            'customCss' => '/public/src/css/finance/subscriptions.css',
+            'customCss' => [
+                '/public/src/css/finance/dashboard.css',
+                '/public/src/css/finance/subscriptions.css'
+            ],
             'customJs' => '/public/src/js/finance/subscriptions.js'
         ]);
     }

@@ -117,8 +117,25 @@ class Router
             'controller' => $controller,
             'action' => $action,
             'method' => $method,
-            'middleware' => $middleware
+            'middleware' => $middleware,
+            'has_params' => str_contains($path, '{')
         ];
+    }
+
+    /**
+     * Trier les routes : routes statiques avant routes avec paramètres
+     * Pour éviter que /api/resource/{id} ne capture /api/resource/stats
+     */
+    public static function sortRoutes(): void
+    {
+        usort(self::$routes, function($a, $b) {
+            // Les routes sans paramètres ont la priorité
+            if ($a['has_params'] !== $b['has_params']) {
+                return $a['has_params'] ? 1 : -1;
+            }
+            // Sinon, trier par longueur de path (plus long = plus spécifique)
+            return strlen($b['path']) - strlen($a['path']);
+        });
     }
 
     /**
@@ -144,6 +161,9 @@ class Router
      */
     public static function dispatch(): void
     {
+        // Trier les routes pour que les statiques passent avant les dynamiques
+        self::sortRoutes();
+        
         $uri = self::getUri();
         $httpMethod = self::getMethod();
 

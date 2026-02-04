@@ -21,6 +21,10 @@ class HomeController extends Controller
     #[CRoute('/login', CHTTPMethod::POST)]
     public function doLogin(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
@@ -35,12 +39,10 @@ class HomeController extends Controller
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($admin && password_verify($password, $admin['password'])) {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_name'] = $admin['name'];
             $_SESSION['admin_email'] = $admin['email'];
+            $_SESSION['user'] = ['id' => $admin['id']];
             
             header('Location: /dashboard');
             exit;

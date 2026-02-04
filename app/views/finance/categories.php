@@ -1,79 +1,92 @@
-<div class="app-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
+<?php
+ob_start();
+?>
+
+<div class="finance-app">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
         <div class="sidebar-header">
-            <h1><i class="fa fa-euro"></i> FinanceApp</h1>
+            <h1 class="logo"><i class="fa fa-line-chart"></i> Finance</h1>
         </div>
-        <nav class="sidebar-nav">
-            <a href="/dashboard"><i class="fa fa-dashboard"></i> Tableau de bord</a>
-            <a href="/accounts"><i class="fa fa-bank"></i> Comptes</a>
-            <a href="/transactions"><i class="fa fa-exchange"></i> Transactions</a>
-            <a href="/subscriptions"><i class="fa fa-refresh"></i> Abonnements</a>
-            <a href="/categories" class="active"><i class="fa fa-tags"></i> Catégories</a>
-        </nav>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/dashboard"><i class="fa fa-dashboard"></i> Tableau de bord</a>
+            </li>
+            <li class="nav-item">
+                <a href="/transactions"><i class="fa fa-exchange"></i> Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a href="/accounts"><i class="fa fa-university"></i> Comptes</a>
+            </li>
+            <li class="nav-item">
+                <a href="/subscriptions"><i class="fa fa-repeat"></i> Abonnements</a>
+            </li>
+            <li class="nav-item active">
+                <a href="/categories"><i class="fa fa-tags"></i> Catégories</a>
+            </li>
+        </ul>
         <div class="sidebar-footer">
-            <a href="/logout"><i class="fa fa-sign-out"></i> Déconnexion</a>
+            <a href="/logout" class="logout-btn"><i class="fa fa-sign-out"></i> Déconnexion</a>
         </div>
-    </aside>
+    </nav>
 
     <!-- Main Content -->
     <main class="main-content">
-        <header class="page-header">
-            <div class="page-title">
-                <h1><i class="fa fa-tags"></i> Catégories</h1>
-                <p>Organisez vos dépenses et revenus</p>
-            </div>
-            <div class="page-actions">
-                <button class="btn btn-primary" onclick="openModal('category-modal')">
-                    <i class="fa fa-plus"></i> Nouvelle catégorie
-                </button>
-            </div>
+        <header class="top-bar">
+            <h2><i class="fa fa-tags"></i> Catégories</h2>
+            <button class="btn btn-primary" onclick="openModal('category-modal')">
+                <i class="fa fa-plus"></i> Nouvelle catégorie
+            </button>
         </header>
 
         <!-- Tabs -->
-        <div class="category-tabs">
-            <button id="tab-expense" class="tab active" onclick="setTab('expense')">
+        <div class="tabs-container">
+            <button id="tab-expense" class="tab-btn active" onclick="setTab('expense')">
                 <i class="fa fa-arrow-down"></i> Dépenses
             </button>
-            <button id="tab-income" class="tab" onclick="setTab('income')">
+            <button id="tab-income" class="tab-btn" onclick="setTab('income')">
                 <i class="fa fa-arrow-up"></i> Revenus
             </button>
         </div>
 
         <!-- Budget Overview (Expense only) -->
-        <section id="budget-overview" class="content-card">
+        <section id="budget-overview" class="card">
             <div class="card-header">
                 <h3><i class="fa fa-pie-chart"></i> Vue d'ensemble des budgets</h3>
-                <select id="budget-month" onchange="loadBudgetStats()">
+                <select id="budget-month" class="select-input" onchange="loadBudgetStats()">
                     <!-- Months loaded dynamically -->
                 </select>
             </div>
-            <div class="budget-summary">
-                <div class="budget-total">
-                    <span class="budget-label">Budget total</span>
-                    <span id="budget-total-value" class="budget-value">0,00 €</span>
+            <div class="card-body">
+                <div class="budget-summary">
+                    <div class="budget-stat">
+                        <span class="budget-label">Budget total</span>
+                        <span id="budget-total-value" class="budget-value">0,00 €</span>
+                    </div>
+                    <div class="budget-stat spent">
+                        <span class="budget-label">Dépensé</span>
+                        <span id="budget-spent-value" class="budget-value">0,00 €</span>
+                    </div>
+                    <div class="budget-stat remaining">
+                        <span class="budget-label">Restant</span>
+                        <span id="budget-remaining-value" class="budget-value">0,00 €</span>
+                    </div>
                 </div>
-                <div class="budget-spent">
-                    <span class="budget-label">Dépensé</span>
-                    <span id="budget-spent-value" class="budget-value">0,00 €</span>
+                <div id="budget-progress-container" class="budget-progress-list">
+                    <!-- Budget progress bars loaded here -->
                 </div>
-                <div class="budget-remaining">
-                    <span class="budget-label">Restant</span>
-                    <span id="budget-remaining-value" class="budget-value">0,00 €</span>
-                </div>
-            </div>
-            <div id="budget-progress-container" class="budget-progress-list">
-                <!-- Budget progress bars loaded here -->
             </div>
         </section>
 
         <!-- Categories Grid -->
-        <section class="content-card">
+        <section class="card">
             <div class="card-header">
                 <h3 id="categories-title">Catégories de dépenses</h3>
             </div>
-            <div id="categories-container" class="categories-grid">
-                <!-- Categories loaded here -->
+            <div class="card-body">
+                <div id="categories-container" class="categories-grid">
+                    <!-- Categories loaded here -->
+                </div>
             </div>
         </section>
     </main>
@@ -83,7 +96,7 @@
 <div id="category-modal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 id="category-modal-title">Nouvelle catégorie</h2>
+            <h3 id="category-modal-title">Nouvelle catégorie</h3>
             <button class="modal-close" onclick="closeModal('category-modal')">&times;</button>
         </div>
         <form id="category-form">
@@ -91,30 +104,30 @@
             
             <div class="form-group">
                 <label for="form-name">Nom</label>
-                <input type="text" id="form-name" name="name" required placeholder="Alimentation, Salaire...">
+                <input type="text" id="form-name" name="name" class="form-input" required placeholder="Alimentation, Salaire...">
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="form-type">Type</label>
-                    <select id="form-type" name="type" required onchange="toggleBudgetField()">
+                    <select id="form-type" name="type" class="form-input" required onchange="toggleBudgetField()">
                         <option value="expense">Dépense</option>
                         <option value="income">Revenu</option>
                     </select>
                 </div>
                 <div class="form-group" id="budget-field">
                     <label for="form-budget">Budget mensuel</label>
-                    <input type="number" id="form-budget" name="budget" step="0.01" placeholder="500.00">
+                    <input type="number" id="form-budget" name="budget" class="form-input" step="0.01" placeholder="500.00">
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="form-icon">Icône</label>
-                    <select id="form-icon" name="icon">
+                    <select id="form-icon" name="icon" class="form-input">
                         <option value="">-- Aucune --</option>
                         <option value="fa-shopping-cart">🛒 Courses</option>
-                        <option value="fa-utensils">🍽️ Restaurant</option>
+                        <option value="fa-cutlery">🍽️ Restaurant</option>
                         <option value="fa-car">🚗 Transport</option>
                         <option value="fa-home">🏠 Logement</option>
                         <option value="fa-bolt">⚡ Énergie</option>
@@ -131,7 +144,7 @@
                 </div>
                 <div class="form-group">
                     <label for="form-color">Couleur</label>
-                    <input type="color" id="form-color" name="color" value="#2563eb">
+                    <input type="color" id="form-color" name="color" class="form-input color-input" value="#2563eb">
                 </div>
             </div>
             
@@ -143,5 +156,7 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="/src/css/finance/categories.css">
-<script src="/src/js/finance/categories.js"></script>
+<?php
+$content = ob_get_clean();
+require ROOT . '/app/views/layout.php';
+?>

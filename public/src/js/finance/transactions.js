@@ -37,9 +37,13 @@ async function loadFiltersData() {
             const filterAccount = document.getElementById('filter-account');
             const formAccount = document.getElementById('form-account');
             
-            const accountOptions = accounts.data.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+            const accountOptions = accounts.data.map(a => {
+                const balance = parseFloat(a.current_balance) || 0;
+                return `<option value="${a.id}">${a.name} (${formatAmount(balance)})</option>`;
+            }).join('');
             
-            filterAccount.innerHTML = '<option value="">Tous les comptes</option>' + accountOptions;
+            filterAccount.innerHTML = '<option value="">Tous les comptes</option>' + 
+                accounts.data.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
             formAccount.innerHTML = accountOptions;
         }
 
@@ -266,6 +270,7 @@ async function handleTransactionSubmit(e) {
             closeModal('transaction-modal');
             loadTransactions(currentPage);
             loadStats();
+            loadFiltersData(); // Rafraîchir les soldes des comptes
         } else {
             alert(result.message || 'Erreur');
         }
@@ -285,6 +290,7 @@ async function deleteTransaction(id) {
         if (result.code === 200) {
             loadTransactions(currentPage);
             loadStats();
+            loadFiltersData(); // Rafraîchir les soldes des comptes
         } else {
             alert(result.message || 'Erreur');
         }

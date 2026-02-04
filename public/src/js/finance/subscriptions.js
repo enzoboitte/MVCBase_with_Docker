@@ -208,12 +208,13 @@ async function loadStats() {
         if (data.code === 200) {
             // Calculate monthly total
             let monthlyTotal = 0;
-            data.data.filter(s => s.is_active).forEach(sub => {
+            data.data.filter(s => s.is_active == 1).forEach(sub => {
+                const amount = parseFloat(sub.amount) || 0;
                 switch (sub.frequency) {
-                    case 'daily': monthlyTotal += sub.amount * 30; break;
-                    case 'weekly': monthlyTotal += sub.amount * 4.33; break;
-                    case 'monthly': monthlyTotal += sub.amount; break;
-                    case 'yearly': monthlyTotal += sub.amount / 12; break;
+                    case 'daily': monthlyTotal += amount * 30; break;
+                    case 'weekly': monthlyTotal += amount * 4.33; break;
+                    case 'monthly': monthlyTotal += amount; break;
+                    case 'yearly': monthlyTotal += amount / 12; break;
                 }
             });
             

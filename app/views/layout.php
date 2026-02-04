@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'FinanceApp' ?></title>
-    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="stylesheet" href="/public/src/css/style.css">
     <?php if (isset($customCss)):
         if (is_array($customCss)):
             foreach ($customCss as $cssPath): ?>
@@ -21,7 +21,7 @@
 <body<?= isset($bodyClass) ? ' class="' . $bodyClass . '"' : '' ?>>
     <?= $content ?? '' ?>
 
-    <script src="/src/js/app.js"></script>
+    <script src="/public/src/js/app.js"></script>
     <?php if (isset($customJs)): ?>
     <script src="<?= $customJs ?>"></script>
     <?php endif; ?>

@@ -212,7 +212,10 @@ class CategoryController extends Controller
     {
         $this->view('finance/categories', [
             'title' => 'Catégories',
-            'customCss' => '/public/src/css/finance/categories.css',
+            'customCss' => [
+                '/public/src/css/finance/dashboard.css',
+                '/public/src/css/finance/categories.css'
+            ],
             'customJs' => '/public/src/js/finance/categories.js'
         ]);
     }

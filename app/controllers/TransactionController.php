@@ -187,12 +187,12 @@ class TransactionController extends Controller
             $stmt->execute([
                 'user_id' => $userId,
                 'account_id' => intval($input['account_id']),
-                'category_id' => isset($input['category_id']) ? intval($input['category_id']) : null,
+                'category_id' => !empty($input['category_id']) ? intval($input['category_id']) : null,
                 'type' => $input['type'],
                 'amount' => $amount,
                 'description' => trim($input['description']),
                 'date' => $input['date'],
-                'is_recurring' => isset($input['is_recurring']) ? (bool)$input['is_recurring'] : false,
+                'is_recurring' => !empty($input['is_recurring']) ? 1 : 0,
                 'notes' => $input['notes'] ?? null
             ]);
             

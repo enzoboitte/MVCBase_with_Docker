@@ -127,7 +127,7 @@ class AccountController extends Controller
         
         $stmt = $conn->prepare('
             UPDATE Account 
-            SET name = :name, type = :type, icon = :icon, color = :color, include_in_net_worth = :include_net_worth
+            SET name = :name, type = :type, current_balance = :current_balance, icon = :icon, color = :color, include_in_net_worth = :include_net_worth
             WHERE id = :id AND user_id = :user_id
         ');
         
@@ -136,9 +136,10 @@ class AccountController extends Controller
             'user_id' => $userId,
             'name' => trim($input['name']),
             'type' => $input['type'],
+            'current_balance' => floatval($input['current_balance'] ?? 0),
             'icon' => $input['icon'] ?? 'fa-university',
             'color' => $input['color'] ?? '#2563eb',
-            'include_net_worth' => isset($input['include_in_net_worth']) ? (bool)$input['include_in_net_worth'] : true
+            'include_net_worth' => isset($input['include_in_net_worth']) ? ($input['include_in_net_worth'] ? 1 : 0) : 1
         ]);
         
         $this->json(['code' => 200, 'message' => 'Compte mis à jour']);
