@@ -3,12 +3,12 @@
 #[CMiddleware(middleware: ['auth'])]
 class DashboardController extends Controller
 {
-    #[CRoute('/dashboard', CHTTPMethod::GET)]
+    #[CRoute('/', CHTTPMethod::GET)]
+    #[CPublic]
     public function index(): void
     {
         $this->view('dashboard/index', [
-            'back' => '/',
-            'title' => 'Tableau de bord'
+            'title' => 'Portfolio - BOITTE Enzo'
         ]);
     }
 

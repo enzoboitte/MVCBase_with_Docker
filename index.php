@@ -3,6 +3,7 @@ session_start();
 define('ROOT', __DIR__);
 
 require_once ROOT . '/app/models/Model.php';
+require_once ROOT . '/app/models/Icon.php';
 
 $l_sBdd = getenv('DB_DATABASE') ?: 'portfolio';
 $l_cCon = Model::getConnection();

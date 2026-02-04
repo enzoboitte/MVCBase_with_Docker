@@ -1,0 +1,461 @@
+/* ================================================
+   MINI FRAMEWORK - LAYOUT & UTILS
+   ================================================ */
+
+/* Variables CSS */
+:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #64748b;
+    --text-color: #1e293b;
+    --text-light: #64748b;
+    --bg-color: #ffffff;
+    --bg-secondary: #f8fafc;
+    --border-color: #e2e8f0;
+    --gradient-start: #2563eb;
+    --gradient-end: #133275;
+    --gradient-start-light: #91b2f85e;
+    --gradient-end-light: #afc6f727;
+}
+
+/* Base Reset & Layout Fixes */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;       /* Prend tout l'écran */
+    overflow: hidden;   /* Empêche le scroll global de la fenêtre */
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f4f4f4; /* Couleur de fond derrière l'app */
+}
+
+/* Grille principale de l'application */
+.app-shell {
+    height: 100vh;      /* Force la hauteur exacte de la fenêtre */
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 2rem;
+    padding: 1rem;      /* Marge autour de l'application */
+    box-sizing: border-box; 
+    overflow: hidden;   /* Coupe tout ce qui dépasse du shell */
+    max-width: 100%;
+}
+
+/* Sidebar */
+.app-sidebar {
+    height: 100%;
+    overflow-y: auto;   /* La sidebar peut scroller si l'écran est petit */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Zone principale (Main) */
+.app-main {
+    height: 100%;           /* Prend toute la hauteur de la grille */
+    display: flex;          /* Mode Flexbox */
+    flex-direction: column; /* Vertical */
+    gap: 1.5rem;            /* Espace entre les lignes */
+    overflow: hidden;       /* Important : empêche le scroll global ici */
+    padding-bottom: 0.5rem;
+}
+
+.section {
+    padding: 3rem 2rem;
+}
+
+/* ================================================
+   GRILLES ET COLONNES
+   ================================================ */
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    flex-shrink: 0; /* Empêche les lignes du haut d'être écrasées */
+}
+
+.col-4 {
+    flex: 1 1 300px;
+    min-width: 220px;
+    max-width: 450px;
+}
+
+.col-6 {
+    flex: 1 1 400px;
+    min-width: 260px;
+}
+
+.col-12 {
+    flex: 1 1 100%;
+    width: 100%;
+}
+
+/* ================================================
+   UTILITAIRES DE TEXTE & SPACING
+   ================================================ */
+
+.text-muted { color: var(--text-light); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-success { color: #16a34a; }
+.text-danger { color: #dc2626; }
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
+}
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.p-1  { padding: 0.5rem; }
+.p-2  { padding: 1rem; }
+.p-3  { padding: 1.5rem; }
+
+/* ================================================
+   BUTTONS
+   ================================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.btn-icon-left svg,
+.btn-icon-right svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.45);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: rgba(37, 99, 235, 0.06);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-light);
+}
+
+.btn-ghost:hover {
+    background: var(--bg-secondary);
+    color: var(--text-color);
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-sm { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+.btn-lg { padding: 0.8rem 1.6rem; font-size: 1rem; }
+
+/* ================================================
+   CARDS & FLEX-1 (Le Cœur du Layout)
+   ================================================ */
+
+.card {
+    background: var(--bg-color);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
+    transition: all 0.25s ease;
+    
+    /* Structure Flex Verticale par défaut */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* CLASSE MAGIQUE : À ajouter sur la card ou section qui doit prendre tout l'espace */
+.flex-1 {
+    flex: 1;        /* Grandit pour remplir le vide */
+    min-height: 0;  /* Permet de rétrécir si besoin */
+    display: flex;
+    flex-direction: column;
+}
+
+.left { 
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.center {
+    align-items: center;
+    justify-content: center;
+}
+.right {
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.card:not(.nohover):hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-shrink: 0; /* L'en-tête ne doit jamais disparaître */
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.card-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.card-trend {
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.card-body {
+    /* Le corps prend l'espace disponible dans la card */
+    flex: 1;
+    min-height: 0;      /* Nécessaire pour flexbox scroll */
+    margin-top: 0.5rem;
+    overflow-y: auto;   /* Scroll uniquement ici si ça dépasse */
+}
+
+/* Scrollbar personnalisée pour card-body */
+.card-body::-webkit-scrollbar { width: 6px; }
+.card-body::-webkit-scrollbar-track { background: transparent; }
+.card-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+.card-body::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+.card-footer {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-light);
+    flex-shrink: 0; /* Le footer ne doit jamais disparaître */
+}
+
+.card-highlight {
+    /*background: radial-gradient(circle at top left, rgba(37,99,235,0.09), transparent 60%);*/
+    background: linear-gradient(135deg, var(--gradient-start-light), var(--gradient-end-light));
+}
+
+/* ================================================
+   BADGES & CHIPS
+   ================================================ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.badge-pill { padding: 0.2rem 0.6rem; font-size: 0.7rem; }
+.badge-neutral { background: var(--bg-secondary); color: var(--text-light); }
+.badge-success { background: rgba(22, 163, 74, 0.12); color: #16a34a; }
+.badge-danger { background: rgba(220, 38, 38, 0.12); color: #dc2626; }
+.badge-warning { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    background: var(--bg-secondary);
+    color: var(--text-color);
+}
+
+/* ================================================
+   LISTES & TABLEAUX
+   ================================================ */
+
+.list { list-style: none; margin: 0; padding: 0; }
+
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+}
+.list-item:last-child { border-bottom: none; }
+
+.list-main { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.list-icon {
+    width: 36px; height: 36px; border-radius: 999px; background: var(--bg-secondary);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.list-icon svg { width: 18px; height: 18px; color: var(--primary-color); }
+.list-title { font-size: 0.95rem; font-weight: 500; color: var(--text-color); }
+.list-subtitle { font-size: 0.8rem; color: var(--text-light); }
+.list-amount { text-align: right; }
+.list-amount-main { font-weight: 600; font-size: 0.95rem; }
+.list-amount-meta { font-size: 0.8rem; color: var(--text-light); }
+.list-income .list-amount-main { color: #16a34a; }
+.list-expense .list-amount-main { color: #dc2626; }
+
+/* Table */
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table thead { background: var(--bg-secondary); }
+.table th, .table td {
+    padding: 0.6rem 0.75rem; text-align: left;
+    border-bottom: 1px solid var(--border-color); white-space: nowrap;
+}
+.table th {
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-light); font-weight: 600;
+}
+.table tbody tr:hover { background: rgba(148, 163, 184, 0.06); }
+
+/* ================================================
+   FORM / INPUTS
+   ================================================ */
+
+.form-inline { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.input-group { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; min-width: 140px; }
+.input-label { font-weight: 500; color: var(--text-color); }
+.input-control {
+    display: flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.75rem;
+    border-radius: 8px; border: 1px solid var(--border-color);
+    background: var(--bg-color); transition: all 0.2s ease;
+}
+.input-control input, .input-control select {
+    border: none; outline: none; font-size: 0.9rem; width: 100%;
+    background: transparent; color: var(--text-color);
+}
+.input-control:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+/* ================================================
+   COMPOSANTS SPÉCIFIQUES FINANCE
+   ================================================ */
+
+/* Scroll horizontal pour comptes bancaires */
+.accounts-scroll {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    scroll-behavior: smooth;
+}
+.accounts-scroll::-webkit-scrollbar { height: 6px; }
+.accounts-scroll::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 3px; }
+.accounts-scroll::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+.accounts-scroll::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+.account-card-item { flex: 0 0 280px; min-width: 280px; }
+
+/* Wrapper résumé (non utilisé dans l'exemple actuel mais utile) */
+.summary-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+.summary-item { flex: 1 1 160px; }
+
+/* Icônes */
+.icon { width: 20px; height: 20px; }
+.icon-sm { width: 16px; height: 16px; }
+.icon-lg { width: 28px; height: 28px; }
+
+
+/* Title */
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+
+@media (max-width: 1400px) {
+    .app-shell { grid-template-columns: 220px 1fr; }
+}
+
+@media (max-width: 768px) {
+    .app-shell {
+        grid-template-columns: 1fr;
+        height: auto;       /* Sur mobile, on laisse le scroll naturel */
+        overflow: visible;
+        padding: 0.5rem;
+    }
+    
+    .app-main {
+        overflow: visible;
+        padding-bottom: 2rem;
+    }
+
+    /* Sur mobile, la card flexible reprend une taille fixe pour ne pas être écrasée */
+    .flex-1 {
+        flex: none;
+        height: 500px; 
+    }
+    
+    .app-sidebar {
+        height: auto;
+        overflow: visible;
+    }
+}

@@ -1,100 +1,182 @@
-<?php
-$customCss = '/public/src/css/dashboard/index.css';
-ob_start();
+<?php ob_start();
+
+$l_sIconHtml = EFinanceIcon::Income->getHtmlSvg('list-icon-svg');
+
+class C_BankAccount {
+    public function __construct(
+        public int $i_iId,
+        public string $s_sName,
+        public string $s_sType,
+        public float $f_fBalance,
+        public string $s_sColor
+    ) {}
+}
+
+class C_Transaction {
+    public function __construct(
+        public string $s_sLabel,
+        public string $s_sCategory,
+        public float $f_fAmount,
+        public string $s_sDate,
+        public string $s_sType
+    ) {}
+}
+
+$G_l_cAccounts = [
+    new C_BankAccount(1, 'Compte Courant', 'Courant', 2847.32, '#2563eb'),
+    new C_BankAccount(2, 'Livret A', 'Épargne', 15420.00, '#16a34a'),
+    new C_BankAccount(3, 'PEL', 'Épargne', 8250.50, '#d97706'),
+    new C_BankAccount(4, 'Compte Entreprise', 'Professionnel', 4128.90, '#8b5cf6')
+];
+
+$G_l_cTransactions = [
+    new C_Transaction('Netflix', 'Abonnements', -15.99, '01/02/2026', 'expense'),
+    new C_Transaction('Spotify', 'Abonnements', -9.99, '01/02/2026', 'expense'),
+    new C_Transaction('OVH Cloud', 'Abonnements', -24.99, '02/02/2026', 'expense'),
+    new C_Transaction('Adobe CC', 'Abonnements', -59.99, '03/02/2026', 'expense'),
+    new C_Transaction('Loyer', 'Logement', -850.00, '01/02/2026', 'expense'),
+    new C_Transaction('Courses Carrefour', 'Alimentaire', -127.45, '02/02/2026', 'expense'),
+    new C_Transaction('Essence Total', 'Transport', -68.50, '03/02/2026', 'expense'),
+    new C_Transaction('Restaurant', 'Loisirs', -42.80, '03/02/2026', 'expense'),
+    new C_Transaction('Salaire', 'Revenus', 3200.00, '31/01/2026', 'income'),
+    new C_Transaction('Freelance Client A', 'Revenus', 1500.00, '28/01/2026', 'income')
+];
+
+$G_l_fCategories = [
+    'Abonnements' => 110.96,
+    'Logement' => 850.00,
+    'Alimentaire' => 127.45,
+    'Transport' => 68.50,
+    'Loisirs' => 42.80,
+    'Santé' => 85.20,
+    'Shopping' => 234.60
+];
+
+$l_fTotalBalance = array_sum(array_column($G_l_cAccounts, 'f_fBalance'));
+$l_fTotalIncome = array_sum(array_map(fn($c_cTx) => $c_cTx->s_sType === 'income' ? $c_cTx->f_fAmount : 0, $G_l_cTransactions));
+$l_fTotalExpense = abs(array_sum(array_map(fn($c_cTx) => $c_cTx->s_sType === 'expense' ? $c_cTx->f_fAmount : 0, $G_l_cTransactions)));
+$l_fMonthlySubscriptions = array_sum(array_filter($G_l_fCategories, fn($l_sKey) => $l_sKey === 'Abonnements', ARRAY_FILTER_USE_KEY));
+$l_fProjectedEndMonth = $l_fTotalBalance + ($l_fTotalIncome - $l_fTotalExpense);
+$l_fProjectedDelta = $l_fTotalIncome - $l_fTotalExpense;
+
+function F_sFormatCurrency(float $l_fAmount): string {
+    return number_format($l_fAmount, 2, ',', ' ') . ' €';
+}
 ?>
 
-<a id="btn-logout" href="/logout"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M224 160C241.7 160 256 145.7 256 128C256 110.3 241.7 96 224 96L160 96C107 96 64 139 64 192L64 448C64 501 107 544 160 544L224 544C241.7 544 256 529.7 256 512C256 494.3 241.7 480 224 480L160 480C142.3 480 128 465.7 128 448L128 192C128 174.3 142.3 160 160 160L224 160zM566.6 342.6C579.1 330.1 579.1 309.8 566.6 297.3L438.6 169.3C426.1 156.8 405.8 156.8 393.3 169.3C380.8 181.8 380.8 202.1 393.3 214.6L466.7 288L256 288C238.3 288 224 302.3 224 320C224 337.7 238.3 352 256 352L466.7 352L393.3 425.4C380.8 437.9 380.8 458.2 393.3 470.7C405.8 483.2 426.1 483.2 438.6 470.7L566.6 342.7z"/></svg></a>
-<div class="dashboard">
-    <div class="dashboard-container">
-        <header class="dashboard-header">
-            <h1><?= htmlspecialchars($title) ?></h1>
-            <p>Gérez votre portfolio depuis cet espace d'administration</p>
-        </header>
+<div class="app-shell">
+    <?php include ROOT . '/app/views/components/menu.php'; ?>
 
+    <main class="app-main">
+        
+        <section class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><?= EFinanceIcon::Wallet->getHtmlSvg() ?> Solde total</div>
+                        <span class="badge badge-success">Actif</span>
+                    </div>
+                    <div class="card-value"><?= F_sFormatCurrency($l_fTotalBalance) ?></div>
+                    <div class="card-footer text-muted">Mise à jour : 13:20</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><?= EFinanceIcon::Calendar->getHtmlSvg() ?> Prévision</div>
+                    </div>
+                    <div class="card-value"><?= F_sFormatCurrency($l_fProjectedEndMonth) ?></div>
+                    <div class="card-footer text-success">+<?= F_sFormatCurrency($l_fProjectedDelta) ?></div>
+                </div>
+            </div>
+        </section>
 
-        <ul class="dashboard-grid">
-            <li class="dashboard-card">
-                <a href="/dashboard/diploma">
-                    <div class="card-icon diploma">
-                        <i class="fa fa-graduation-cap"></i>
+        <section class="row center">
+            <div class="col-4 flex-1">
+                <div class="card nohover">
+                    <div class="card-header"><div class="card-title">Revenus</div></div>
+                    <div class="card-value text-success"><?= F_sFormatCurrency($l_fTotalIncome) ?></div>
+                </div>
+            </div>
+            <div class="col-4 flex-1">
+                <div class="card nohover">
+                    <div class="card-header"><div class="card-title">Dépenses</div></div>
+                    <div class="card-value text-danger">- <?= F_sFormatCurrency($l_fTotalExpense) ?></div>
+                </div>
+            </div>
+            <div class="col-4 flex-1">
+                <div class="card nohover">
+                    <div class="card-header"><div class="card-title">Abonnements</div></div>
+                    <div class="card-value"><?= F_sFormatCurrency($l_fMonthlySubscriptions) ?></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <div class="card-title"><?= EFinanceIcon::Card->getHtmlSvg() ?> Mes comptes</div>
+            </div>
+            <div class="card-body" style="overflow-x: auto; overflow-y: hidden;">
+                <div class="accounts-scroll center">
+                    <?php foreach($G_l_cAccounts as $acc): ?>
+                    <div class="account-card-item">
+                        <div class="card nohover" style="background:<?= $acc->s_sColor ?>15;">
+                            <b><?= $acc->s_sName ?></b><br>
+                            <?= F_sFormatCurrency($acc->f_fBalance) ?>
+                        </div>
                     </div>
-                    <div class="card-content">
-                        <h2>Diplômes</h2>
-                        <p>Gérez vos formations et certifications</p>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <section class="card flex-1">
+            <div class="card-header">
+                <div class="card-title">
+                    <?= EFinanceIcon::Filter->getHtmlSvg() ?>
+                    Dépenses par catégorie
+                </div>
+                <button class="btn btn-ghost btn-sm">Février 2026</button>
+            </div>
+
+            <div class="card-body">
+                <?php 
+                $l_fTotalCategories = array_sum($G_l_fCategories);
+                arsort($G_l_fCategories);
+                ?>
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                    <?php 
+                    // Je double la boucle juste pour te prouver que ça scrolle ;)
+                    $demodata = array_merge($G_l_fCategories, $G_l_fCategories, $G_l_fCategories); 
+                    foreach($demodata as $l_sCategory => $l_fAmount): 
+                        $l_fPercent = ($l_fAmount / $l_fTotalCategories) * 100;
+                    ?>
+                    <div style="display:flex;flex-direction:column;gap:0.4rem;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span><?= htmlspecialchars($l_sCategory) ?></span>
+                            <b><?= F_sFormatCurrency($l_fAmount) ?></b>
+                        </div>
+                        <div style="height:6px;background:var(--bg-secondary);border-radius:9px;">
+                            <div style="height:100%;background:var(--primary-color);width:<?= $l_fPercent ?>%;border-radius:9px;"></div>
+                        </div>
                     </div>
-                </a>
-            </li>
-            <li class="dashboard-card">
-                <a href="/dashboard/projects">
-                    <div class="card-icon projects">
-                        <i class="fa fa-folder-open"></i>
-                    </div>
-                    <div class="card-content">
-                        <h2>Projets</h2>
-                        <p>Ajoutez et modifiez vos réalisations</p>
-                    </div>
-                </a>
-            </li>
-            <li class="dashboard-card">
-                <a href="/dashboard/technologies">
-                    <div class="card-icon technologies">
-                        <i class="fa fa-code"></i>
-                    </div>
-                    <div class="card-content">
-                        <h2>Technologies</h2>
-                        <p>Listez vos compétences techniques</p>
-                    </div>
-                </a>
-            </li>
-            <li class="dashboard-card">
-                <a href="/dashboard/competences">
-                    <div class="card-icon competences">
-                        <i class="fa fa-star"></i>
-                    </div>
-                    <div class="card-content">
-                        <h2>Compétences</h2>
-                        <p>Mettez en avant vos savoir-faire</p>
-                    </div>
-                </a>
-            </li>
-            <li class="dashboard-card">
-                <a href="/dashboard/experiences">
-                    <div class="card-icon experiences">
-                        <i class="fa fa-briefcase"></i>
-                    </div>
-                    <div class="card-content">
-                        <h2>Expériences</h2>
-                        <p>Décrivez votre parcours professionnel</p>
-                    </div>
-                </a>
-            </li>
-            <li class="dashboard-card">
-                <a href="/dashboard/contact">
-                    <div class="card-icon contact">
-                        <i class="fa fa-envelope"></i>
-                    </div>
-                    <div class="card-content">
-                        <h2>Contact</h2>
-                        <p>Consultez les messages reçus</p>
-                    </div>
-                </a>
-            </li>
-            <li class="dashboard-card">
-                <a href="/dashboard/users">
-                    <div class="card-icon users">
-                        <i class="fa fa-users"></i>
-                    </div>
-                    <div class="card-content">
-                        <h2>Utilisateurs</h2>
-                        <p>Gérez les comptes utilisateurs</p>
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div style="display:flex;justify-content:space-between;">
+                    <span class="text-muted">Total</span>
+                    <span style="font-weight:700;"><?= F_sFormatCurrency($l_fTotalCategories) ?></span>
+                </div>
+            </div>
+        </section>
+
+    </main>
 </div>
+<?php $content = ob_get_clean();
 
-<?php
-$content = ob_get_clean();
-require ROOT . '/app/views/layout.php';
+$customCss = ['/public/src/css/framework.css'];
+$bodyClass = 'home-page'; // Assure-toi que ton layout.php ajoute cette classe au body
+require ROOT . '/app/views/layout.php'; 
 ?>
