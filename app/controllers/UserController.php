@@ -7,7 +7,7 @@ class UserController extends Controller
     {
         // Si déjà connecté, rediriger vers dashboard
         if (isset($_SESSION['user'])) {
-            header('Location: /dashboard');
+            header('Location: /');
             exit;
         }
         
@@ -56,7 +56,7 @@ class UserController extends Controller
             echo json_encode([
                 'code' => 200,
                 'message' => 'Connexion réussie',
-                'redirect' => '/dashboard'
+                'redirect' => '/'
             ]);
             
         } catch (Exception $e) {

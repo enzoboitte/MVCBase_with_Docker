@@ -21,6 +21,14 @@ enum EFinanceIcon: string
     case Transaction = 'transaction';
     case Category    = 'category';
     case Logout      = 'logout';
+    case Sync        = 'sync';
+    case View        = 'view';
+    case Edit        = 'edit';
+    case Delete      = 'delete';
+    case Back        = 'back';
+    case Import      = 'import';
+    case Link        = 'link';
+    case Save        = 'save';
 
     public function getHtmlSvg(string $l_sCssClass = ''): string
     {
@@ -120,6 +128,46 @@ HTML,
             self::Logout => <<<HTML
 <svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
     <path fill="currentColor" d="M16 13h-5v-2h5V8l4 4-4 4zm-6 7H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6v2H4v12h6v2z"/>
+</svg>
+HTML,
+            self::Sync => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+</svg>
+HTML,
+            self::View => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+</svg>
+HTML,
+            self::Edit => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+</svg>
+HTML,
+            self::Delete => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+</svg>
+HTML,
+            self::Back => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+</svg>
+HTML,
+            self::Import => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+</svg>
+HTML,
+            self::Link => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+</svg>
+HTML,
+            self::Save => <<<HTML
+<svg class="$l_sClassAttr" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
 </svg>
 HTML
         };

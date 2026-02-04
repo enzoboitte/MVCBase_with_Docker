@@ -187,29 +187,3 @@ class CBridgeApi
         return false;
     }
 }
-
-
-session_start();
-
-$c_bridge = new CBridgeApi(
-    'sandbox_id_4688615bb0e7451fa4679d41c11650e9',
-    'sandbox_secret_OptrCj0rXy6QkUq4iXZFNdTViyxLk3CDwgpEUmWI9Umf28W8AjZOIHa5BAYOVnkh'
-);
-
-$l_lResult = $c_bridge->F_lInitializeUser($_GET['user_uuid'] ?? null);
-
-if ($l_lResult['success']) {
-    $c_bridge->F_vSaveToSession();
-    
-    $l_lConnectSession = $c_bridge->F_lCreateConnectSession('test@test.com');
-    $l_lTransactions = $c_bridge->F_lGetTransactions();
-    
-    echo "<h1>Utilisateur créé avec succès</h1>";
-    echo "<p>UUID : " . htmlspecialchars($l_lResult['user_uuid']) . "</p>";
-    echo "<p>Token : " . htmlspecialchars($l_lResult['access_token']) . "</p>";
-    echo "<p>Comptes : " . $l_lResult['accounts_count'] . "</p>";
-    echo "<p><a href='" . htmlspecialchars($l_lConnectSession['response']['url']) . "' target='_blank'>Ajouter un compte</a></p>";
-    echo "<p>Transactions : " . count($l_lTransactions['response']['resources']) . "</p>";
-} else {
-    echo "<h1>Erreur</h1>";
-}

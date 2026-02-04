@@ -117,18 +117,48 @@ function F_sFormatCurrency(float $l_fAmount): string {
                 <div class="card-title"><?= EFinanceIcon::Card->getHtmlSvg() ?> Mes comptes</div>
             </div>
             <div class="card-body" style="overflow-x: auto; overflow-y: hidden;">
-                <div class="accounts-scroll center">
-                    <?php foreach($G_l_cAccounts as $acc): ?>
+                <div id="account_list" class="accounts-scroll center">
+                    <?php /*foreach($G_l_cAccounts as $acc): ?>
                     <div class="account-card-item">
                         <div class="card nohover" style="background:<?= $acc->s_sColor ?>15;">
                             <b><?= $acc->s_sName ?></b><br>
                             <?= F_sFormatCurrency($acc->f_fBalance) ?>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+                    <?php endforeach;*/ ?>
                 </div>
             </div>
         </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', async () => 
+            {
+                const accountList = document.getElementById('account_list');
+                try {
+                    const response = await apiRequest('GET', '/api/accounts');
+                    const accounts = response.data || [];
+                    
+                    if (accounts.length === 0) 
+                    {
+                        accountList.innerHTML = '<p style="padding:2rem;color:var(--text-light);">Aucun compte enregistré. <a href="/accounts/create">Ajouter un compte</a></p>';
+                        return;
+                    }
+
+                    accounts.forEach(acc => {
+                        const accDiv = document.createElement('div');
+                        accDiv.className = 'account-card-item';
+                        accDiv.innerHTML = `
+                            <div class="card nohover" style="background:${acc.color}15;">
+                                <b>${acc.name}</b><br>
+                                ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(acc.balance)}
+                            </div>
+                        `;
+                        accountList.appendChild(accDiv);
+                    });
+                } catch (error) {
+                    console.error('Erreur lors du chargement des comptes:', error);
+                }
+            });
+        </script>
 
         <section class="card flex-1">
             <div class="card-header">

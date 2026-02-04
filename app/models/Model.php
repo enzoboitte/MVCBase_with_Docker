@@ -14,7 +14,7 @@ class Model
             // Utilise les variables d'environnement Docker ou valeurs par défaut
             $host = getenv('DB_HOST') ?: 'db';
             $port = getenv('DB_PORT') ?: '3306';
-            $database = getenv('DB_DATABASE') ?: 'portfolio';
+            $database = 'finance_manager';
             $username = getenv('DB_USERNAME') ?: 'userenzo';
             $password = getenv('DB_PASSWORD') ?: '123456789';
 

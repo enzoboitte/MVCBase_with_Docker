@@ -4,7 +4,7 @@
    ================================================ */
 
 /* Override de la popup de base pour les projets */
-#project-popup .popup_content {
+.popup_content {
     max-width: 900px;
     width: 95%;
     height: 92vh;
@@ -234,5 +234,102 @@
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
+    }
+}
+
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .popup_content {
+        background-color: #fff;
+        border-radius: 5px;
+        width: 500px;
+        max-width: 90%;
+
+        position: relative;
+
+        .popup_header {
+            padding: 0 20px 0 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+
+            border-bottom: 1px solid #ddd;
+
+            .popup_title {
+                font-size: 20px;
+                font-weight: bold;
+                width: 100%;
+                border: none;
+            }
+
+            .popup_close {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                line-height: 1;
+
+                width: 20px;
+                height: 20px;
+
+                transition-duration: 0.3s;
+            }
+
+            .popup_close:hover {
+                color: #a00000;
+            }
+        }
+
+        .popup_body {
+            max-height: 400px;
+            overflow-y: auto;
+
+            padding: 10px;
+
+            .popup_field {
+                margin-bottom: 10px;
+
+                .popup_label {
+                    font-weight: bold;
+                    display: block;
+                    margin-bottom: 5px;
+                }
+
+                .popup_value {
+                    white-space: pre-wrap;
+                }
+            }
+        }
+    }
+}
+
+.popup.show {
+    display: flex;
+
+    .popup_content {
+        animation: popupShow 0.3s forwards;
+    }
+}
+
+@keyframes popupShow {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }

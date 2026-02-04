@@ -12,6 +12,7 @@ USE `finance_manager`;
 -- ADMIN TABLE
 CREATE TABLE `Admin`(
     `id` INT NOT NULL AUTO_INCREMENT,
+    `token_bridge` TEXT DEFAULT NULL,
     `email` VARCHAR(150) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
@@ -21,7 +22,7 @@ CREATE TABLE `Admin`(
 
 -- Créer un admin par défaut (mot de passe: admin123)
 INSERT INTO `Admin` (`email`, `password`, `name`) VALUES
-('admin@portfolio.local', '$2y$10$DCfP3XHMve74ydgi6V3ghOgR2fejcVyJcvc5bteck19UBvrfhyIbK', 'Administrateur');
+('admin@finance.local', '$2y$10$DCfP3XHMve74ydgi6V3ghOgR2fejcVyJcvc5bteck19UBvrfhyIbK', 'Administrateur');
 
 -- TABLE FOR ACCOUNTS
 CREATE TABLE `Account`(
@@ -33,7 +34,8 @@ CREATE TABLE `Account`(
     `instant_balance` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
     `color` VARCHAR(7) NOT NULL DEFAULT '#000000',
     `type` ENUM('checking', 'savings', 'credit_card', 'cash', 'other') NOT NULL DEFAULT 'other',
-    `id_bridge` VARCHAR(255) DEFAULT NULL
+    `id_bridge` VARCHAR(255) DEFAULT NULL,
+    `last_sync` TIMESTAMP NULL DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`admin_id`) REFERENCES `Admin`(`id`) ON DELETE CASCADE
