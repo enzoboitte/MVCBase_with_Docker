@@ -11,6 +11,39 @@ class TransactionController extends Controller
         );
     }
 
+    /**
+     * Génère l'UUID Bridge unique basé sur l'admin
+     * Format: sha256(id + created_at + "accounting_bank")
+     */
+    private function generateBridgeUserUuid(): string
+    {
+        $adminId = $_SESSION['user']['id'];
+        $conn = Model::getConnection();
+        $stmt = $conn->prepare('SELECT id, created_at FROM Admin WHERE id = :id');
+        $stmt->execute(['id' => $adminId]);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return hash('sha256', $admin['id'] . $admin['created_at'] . 'accounting_bank');
+    }
+
+    /**
+     * Initialise Bridge avec l'UUID unique de l'admin
+     */
+    private function initializeBridge(): ?CBridgeApi
+    {
+        $bridge = $this->getBridgeApi();
+        $userUuid = $this->generateBridgeUserUuid();
+        
+        $result = $bridge->F_lInitializeUser($userUuid);
+        
+        if ($result['success']) {
+            $bridge->F_vSaveToSession();
+            return $bridge;
+        }
+        
+        return null;
+    }
+
     // ========================
     // PAGES (Views)
     // ========================
@@ -141,6 +174,62 @@ class TransactionController extends Controller
             'total' => (int)$total,
             'limit' => $limit,
             'offset' => $offset
+        ]);
+    }
+
+    /**
+     * Statistiques mensuelles (revenus, dépenses, balance du mois)
+     * IMPORTANT: Cette route doit être AVANT /api/transactions/{id} pour éviter le conflit
+     */
+    #[CRoute('/api/transactions/stats', CHTTPMethod::GET)]
+    public function apiGetStats(): void
+    {
+        $conn = Model::getConnection();
+        $adminId = $_SESSION['user']['id'];
+        
+        $month = $_GET['month'] ?? date('Y-m');
+        $startDate = $month . '-01';
+        $endDate = date('Y-m-t', strtotime($startDate));
+
+        // Total revenus du mois
+        $stmt = $conn->prepare("
+            SELECT COALESCE(SUM(amount), 0) as total 
+            FROM Transaction 
+            WHERE admin_id = :admin_id AND type = 'income' AND date BETWEEN :start AND :end
+        ");
+        $stmt->execute(['admin_id' => $adminId, 'start' => $startDate, 'end' => $endDate]);
+        $totalIncome = (float)$stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+        // Total dépenses du mois
+        $stmt = $conn->prepare("
+            SELECT COALESCE(SUM(ABS(amount)), 0) as total 
+            FROM Transaction 
+            WHERE admin_id = :admin_id AND type = 'expense' AND date BETWEEN :start AND :end
+        ");
+        $stmt->execute(['admin_id' => $adminId, 'start' => $startDate, 'end' => $endDate]);
+        $totalExpense = (float)$stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+        // Par catégorie
+        $stmt = $conn->prepare("
+            SELECT c.name, c.type, SUM(ABS(t.amount)) as total
+            FROM Transaction t
+            JOIN Category c ON t.category_id = c.id
+            WHERE t.admin_id = :admin_id AND t.date BETWEEN :start AND :end
+            GROUP BY c.id, c.name, c.type
+            ORDER BY total DESC
+        ");
+        $stmt->execute(['admin_id' => $adminId, 'start' => $startDate, 'end' => $endDate]);
+        $byCategory = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->json([
+            'code' => 200,
+            'data' => [
+                'month' => $month,
+                'total_income' => $totalIncome,
+                'total_expense' => $totalExpense,
+                'balance' => $totalIncome - $totalExpense,
+                'by_category' => $byCategory
+            ]
         ]);
     }
 
@@ -334,10 +423,11 @@ class TransactionController extends Controller
         $data = json_decode(file_get_contents('php://input'), true);
         $accountId = $data['account_id'] ?? null;
         
-        $bridge = $this->getBridgeApi();
+        // Initialiser Bridge avec l'UUID unique de l'admin
+        $bridge = $this->initializeBridge();
         
-        if (!$bridge->F_bLoadFromSession()) {
-            $this->json(['code' => 401, 'error' => 'Session Bridge non initialisée']);
+        if (!$bridge) {
+            $this->json(['code' => 401, 'error' => 'Impossible d\'initialiser la session Bridge']);
             return;
         }
 
@@ -445,61 +535,6 @@ class TransactionController extends Controller
     // ========================
     // STATS
     // ========================
-
-    /**
-     * Statistiques mensuelles (revenus, dépenses, balance du mois)
-     */
-    #[CRoute('/api/transactions/stats', CHTTPMethod::GET)]
-    public function apiGetStats(): void
-    {
-        $conn = Model::getConnection();
-        $adminId = $_SESSION['user']['id'];
-        
-        $month = $_GET['month'] ?? date('Y-m');
-        $startDate = $month . '-01';
-        $endDate = date('Y-m-t', strtotime($startDate));
-
-        // Total revenus du mois
-        $stmt = $conn->prepare("
-            SELECT COALESCE(SUM(amount), 0) as total 
-            FROM Transaction 
-            WHERE admin_id = :admin_id AND type = 'income' AND date BETWEEN :start AND :end
-        ");
-        $stmt->execute(['admin_id' => $adminId, 'start' => $startDate, 'end' => $endDate]);
-        $totalIncome = (float)$stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
-        // Total dépenses du mois
-        $stmt = $conn->prepare("
-            SELECT COALESCE(SUM(ABS(amount)), 0) as total 
-            FROM Transaction 
-            WHERE admin_id = :admin_id AND type = 'expense' AND date BETWEEN :start AND :end
-        ");
-        $stmt->execute(['admin_id' => $adminId, 'start' => $startDate, 'end' => $endDate]);
-        $totalExpense = (float)$stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
-        // Par catégorie
-        $stmt = $conn->prepare("
-            SELECT c.name, c.type, SUM(ABS(t.amount)) as total
-            FROM Transaction t
-            JOIN Category c ON t.category_id = c.id
-            WHERE t.admin_id = :admin_id AND t.date BETWEEN :start AND :end
-            GROUP BY c.id, c.name, c.type
-            ORDER BY total DESC
-        ");
-        $stmt->execute(['admin_id' => $adminId, 'start' => $startDate, 'end' => $endDate]);
-        $byCategory = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $this->json([
-            'code' => 200,
-            'data' => [
-                'month' => $month,
-                'total_income' => $totalIncome,
-                'total_expense' => $totalExpense,
-                'balance' => $totalIncome - $totalExpense,
-                'by_category' => $byCategory
-            ]
-        ]);
-    }
 
     /**
      * Dashboard complet avec toutes les statistiques

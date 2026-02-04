@@ -1,64 +1,5 @@
 <?php ob_start();
 
-$l_sIconHtml = EFinanceIcon::Income->getHtmlSvg('list-icon-svg');
-
-class C_BankAccount {
-    public function __construct(
-        public int $i_iId,
-        public string $s_sName,
-        public string $s_sType,
-        public float $f_fBalance,
-        public string $s_sColor
-    ) {}
-}
-
-class C_Transaction {
-    public function __construct(
-        public string $s_sLabel,
-        public string $s_sCategory,
-        public float $f_fAmount,
-        public string $s_sDate,
-        public string $s_sType
-    ) {}
-}
-
-$G_l_cAccounts = [
-    new C_BankAccount(1, 'Compte Courant', 'Courant', 2847.32, '#2563eb'),
-    new C_BankAccount(2, 'Livret A', 'Épargne', 15420.00, '#16a34a'),
-    new C_BankAccount(3, 'PEL', 'Épargne', 8250.50, '#d97706'),
-    new C_BankAccount(4, 'Compte Entreprise', 'Professionnel', 4128.90, '#8b5cf6')
-];
-
-$G_l_cTransactions = [
-    new C_Transaction('Netflix', 'Abonnements', -15.99, '01/02/2026', 'expense'),
-    new C_Transaction('Spotify', 'Abonnements', -9.99, '01/02/2026', 'expense'),
-    new C_Transaction('OVH Cloud', 'Abonnements', -24.99, '02/02/2026', 'expense'),
-    new C_Transaction('Adobe CC', 'Abonnements', -59.99, '03/02/2026', 'expense'),
-    new C_Transaction('Loyer', 'Logement', -850.00, '01/02/2026', 'expense'),
-    new C_Transaction('Courses Carrefour', 'Alimentaire', -127.45, '02/02/2026', 'expense'),
-    new C_Transaction('Essence Total', 'Transport', -68.50, '03/02/2026', 'expense'),
-    new C_Transaction('Restaurant', 'Loisirs', -42.80, '03/02/2026', 'expense'),
-    new C_Transaction('Salaire', 'Revenus', 3200.00, '31/01/2026', 'income'),
-    new C_Transaction('Freelance Client A', 'Revenus', 1500.00, '28/01/2026', 'income')
-];
-
-$G_l_fCategories = [
-    'Abonnements' => 110.96,
-    'Logement' => 850.00,
-    'Alimentaire' => 127.45,
-    'Transport' => 68.50,
-    'Loisirs' => 42.80,
-    'Santé' => 85.20,
-    'Shopping' => 234.60
-];
-
-$l_fTotalBalance = array_sum(array_column($G_l_cAccounts, 'f_fBalance'));
-$l_fTotalIncome = array_sum(array_map(fn($c_cTx) => $c_cTx->s_sType === 'income' ? $c_cTx->f_fAmount : 0, $G_l_cTransactions));
-$l_fTotalExpense = abs(array_sum(array_map(fn($c_cTx) => $c_cTx->s_sType === 'expense' ? $c_cTx->f_fAmount : 0, $G_l_cTransactions)));
-$l_fMonthlySubscriptions = array_sum(array_filter($G_l_fCategories, fn($l_sKey) => $l_sKey === 'Abonnements', ARRAY_FILTER_USE_KEY));
-$l_fProjectedEndMonth = $l_fTotalBalance + ($l_fTotalIncome - $l_fTotalExpense);
-$l_fProjectedDelta = $l_fTotalIncome - $l_fTotalExpense;
-
 function F_sFormatCurrency(float $l_fAmount): string {
     return number_format($l_fAmount, 2, ',', ' ') . ' €';
 }
@@ -76,17 +17,17 @@ function F_sFormatCurrency(float $l_fAmount): string {
                         <div class="card-title"><?= EFinanceIcon::Wallet->getHtmlSvg() ?> Solde total</div>
                         <span class="badge badge-success">Actif</span>
                     </div>
-                    <div class="card-value"><?= F_sFormatCurrency($l_fTotalBalance) ?></div>
-                    <div class="card-footer text-muted">Mise à jour : 13:20</div>
+                    <div class="card-value" id="totalBalance">--</div>
+                    <div class="card-footer text-muted" id="lastUpdate">Chargement...</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title"><?= EFinanceIcon::Calendar->getHtmlSvg() ?> Prévision</div>
+                        <div class="card-title"><?= EFinanceIcon::Calendar->getHtmlSvg() ?> Prévision fin de mois</div>
                     </div>
-                    <div class="card-value"><?= F_sFormatCurrency($l_fProjectedEndMonth) ?></div>
-                    <div class="card-footer text-success">+<?= F_sFormatCurrency($l_fProjectedDelta) ?></div>
+                    <div class="card-value" id="projectedBalance">--</div>
+                    <div class="card-footer" id="projectedVariation">--</div>
                 </div>
             </div>
         </section>
@@ -95,19 +36,19 @@ function F_sFormatCurrency(float $l_fAmount): string {
             <div class="col-4 flex-1">
                 <div class="card nohover">
                     <div class="card-header"><div class="card-title">Revenus</div></div>
-                    <div class="card-value text-success"><?= F_sFormatCurrency($l_fTotalIncome) ?></div>
+                    <div class="card-value text-success" id="totalIncome">--</div>
                 </div>
             </div>
             <div class="col-4 flex-1">
                 <div class="card nohover">
                     <div class="card-header"><div class="card-title">Dépenses</div></div>
-                    <div class="card-value text-danger">- <?= F_sFormatCurrency($l_fTotalExpense) ?></div>
+                    <div class="card-value text-danger" id="totalExpense">--</div>
                 </div>
             </div>
             <div class="col-4 flex-1">
                 <div class="card nohover">
                     <div class="card-header"><div class="card-title">Abonnements</div></div>
-                    <div class="card-value"><?= F_sFormatCurrency($l_fMonthlySubscriptions) ?></div>
+                    <div class="card-value" id="totalSubscriptions">--</div>
                 </div>
             </div>
         </section>
@@ -118,47 +59,10 @@ function F_sFormatCurrency(float $l_fAmount): string {
             </div>
             <div class="card-body" style="overflow-x: auto; overflow-y: hidden;">
                 <div id="account_list" class="accounts-scroll center">
-                    <?php /*foreach($G_l_cAccounts as $acc): ?>
-                    <div class="account-card-item">
-                        <div class="card nohover" style="background:<?= $acc->s_sColor ?>15;">
-                            <b><?= $acc->s_sName ?></b><br>
-                            <?= F_sFormatCurrency($acc->f_fBalance) ?>
-                        </div>
-                    </div>
-                    <?php endforeach;*/ ?>
+                    <!-- Chargé via JS -->
                 </div>
             </div>
         </section>
-        <script>
-            document.addEventListener('DOMContentLoaded', async () => 
-            {
-                const accountList = document.getElementById('account_list');
-                try {
-                    const response = await apiRequest('GET', '/api/accounts');
-                    const accounts = response.data || [];
-                    
-                    if (accounts.length === 0) 
-                    {
-                        accountList.innerHTML = '<p style="padding:2rem;color:var(--text-light);">Aucun compte enregistré. <a href="/accounts/create">Ajouter un compte</a></p>';
-                        return;
-                    }
-
-                    accounts.forEach(acc => {
-                        const accDiv = document.createElement('div');
-                        accDiv.className = 'account-card-item';
-                        accDiv.innerHTML = `
-                            <div class="card nohover" style="background:${acc.color}15;">
-                                <b>${acc.name}</b><br>
-                                ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(acc.balance)}
-                            </div>
-                        `;
-                        accountList.appendChild(accDiv);
-                    });
-                } catch (error) {
-                    console.error('Erreur lors du chargement des comptes:', error);
-                }
-            });
-        </script>
 
         <section class="card flex-1">
             <div class="card-header">
@@ -166,47 +70,125 @@ function F_sFormatCurrency(float $l_fAmount): string {
                     <?= EFinanceIcon::Filter->getHtmlSvg() ?>
                     Dépenses par catégorie
                 </div>
-                <button class="btn btn-ghost btn-sm">Février 2026</button>
+                <span class="badge badge-neutral" id="currentMonth">--</span>
             </div>
 
-            <div class="card-body">
-                <?php 
-                $l_fTotalCategories = array_sum($G_l_fCategories);
-                arsort($G_l_fCategories);
-                ?>
-                <div style="display:flex;flex-direction:column;gap:1rem;">
-                    <?php 
-                    // Je double la boucle juste pour te prouver que ça scrolle ;)
-                    $demodata = array_merge($G_l_fCategories, $G_l_fCategories, $G_l_fCategories); 
-                    foreach($demodata as $l_sCategory => $l_fAmount): 
-                        $l_fPercent = ($l_fAmount / $l_fTotalCategories) * 100;
-                    ?>
-                    <div style="display:flex;flex-direction:column;gap:0.4rem;">
-                        <div style="display:flex;justify-content:space-between;">
-                            <span><?= htmlspecialchars($l_sCategory) ?></span>
-                            <b><?= F_sFormatCurrency($l_fAmount) ?></b>
-                        </div>
-                        <div style="height:6px;background:var(--bg-secondary);border-radius:9px;">
-                            <div style="height:100%;background:var(--primary-color);width:<?= $l_fPercent ?>%;border-radius:9px;"></div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
+            <div class="card-body" id="expensesCategoryContainer">
+                <p style="text-align:center;color:var(--text-light);">Chargement...</p>
             </div>
 
             <div class="card-footer">
                 <div style="display:flex;justify-content:space-between;">
-                    <span class="text-muted">Total</span>
-                    <span style="font-weight:700;"><?= F_sFormatCurrency($l_fTotalCategories) ?></span>
+                    <span class="text-muted">Total dépenses</span>
+                    <span style="font-weight:700;" id="totalExpenseFooter">--</span>
                 </div>
             </div>
         </section>
 
     </main>
 </div>
+
+<script>
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
+}
+
+function formatMonth(monthStr) {
+    const [year, month] = monthStr.split('-');
+    const date = new Date(year, parseInt(month) - 1);
+    return date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+}
+
+async function loadDashboard() {
+    try {
+        const response = await apiRequest('GET', '/api/stats/dashboard');
+        
+        if (response.code !== 200) {
+            console.error('Erreur API:', response);
+            return;
+        }
+        
+        const data = response.data;
+        
+        // Solde total
+        document.getElementById('totalBalance').textContent = formatCurrency(data.total_balance);
+        document.getElementById('lastUpdate').textContent = `Mise à jour : ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+        
+        // Prévision
+        document.getElementById('projectedBalance').textContent = formatCurrency(data.forecast.projected_balance);
+        const variation = data.forecast.projected_variation;
+        const variationEl = document.getElementById('projectedVariation');
+        variationEl.textContent = (variation >= 0 ? '+' : '') + formatCurrency(variation);
+        variationEl.className = 'card-footer ' + (variation >= 0 ? 'text-success' : 'text-danger');
+        
+        // Revenus/Dépenses/Abonnements du mois
+        document.getElementById('totalIncome').textContent = formatCurrency(data.monthly.income);
+        document.getElementById('totalExpense').textContent = '- ' + formatCurrency(data.monthly.expense);
+        document.getElementById('totalSubscriptions').textContent = formatCurrency(data.subscriptions.expense);
+        
+        // Mois en cours
+        document.getElementById('currentMonth').textContent = formatMonth(data.period.month);
+        
+        // Dépenses par catégorie
+        const container = document.getElementById('expensesCategoryContainer');
+        const categories = data.expenses_by_category || [];
+        const totalExpense = data.monthly.expense;
+        
+        if (categories.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:var(--text-light);">Aucune dépense ce mois-ci</p>';
+        } else {
+            container.innerHTML = '<div style="display:flex;flex-direction:column;gap:1rem;">' +
+                categories.map(cat => `
+                    <div style="display:flex;flex-direction:column;gap:0.4rem;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>${cat.name}</span>
+                            <span><b>${formatCurrency(cat.total)}</b> <small class="text-muted">(${cat.percentage}%)</small></span>
+                        </div>
+                        <div style="height:6px;background:var(--bg-secondary);border-radius:9px;">
+                            <div style="height:100%;background:var(--primary-color);width:${cat.percentage}%;border-radius:9px;transition:width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                `).join('') +
+            '</div>';
+        }
+        
+        document.getElementById('totalExpenseFooter').textContent = formatCurrency(totalExpense);
+        
+        // Comptes
+        loadAccounts(data.accounts);
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement du dashboard:', error);
+    }
+}
+
+function loadAccounts(accounts) {
+    const accountList = document.getElementById('account_list');
+    
+    if (!accounts || accounts.length === 0) {
+        accountList.innerHTML = '<p style="padding:2rem;color:var(--text-light);">Aucun compte enregistré. <a href="/accounts/create">Ajouter un compte</a></p>';
+        return;
+    }
+    
+    accountList.innerHTML = accounts.map(acc => `
+        <div class="account-card-item">
+            <a href="/accounts/${acc.id}" class="card nohover" style="background:${acc.color}15;text-decoration:none;color:inherit;">
+                <b>${acc.name}</b><br>
+                ${formatCurrency(acc.current_balance)}
+                <div style="margin-top:0.5rem;font-size:0.75rem;" class="${acc.variation >= 0 ? 'text-success' : 'text-danger'}">
+                    ${acc.variation >= 0 ? '↑' : '↓'} ${formatCurrency(Math.abs(acc.variation))} prévu
+                </div>
+            </a>
+        </div>
+    `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+
 <?php $content = ob_get_clean();
 
 $customCss = ['/public/src/css/framework.css'];
-$bodyClass = 'home-page'; // Assure-toi que ton layout.php ajoute cette classe au body
+$bodyClass = 'home-page';
 require ROOT . '/app/views/layout.php'; 
 ?>

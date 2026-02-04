@@ -4,6 +4,7 @@ define('ROOT', __DIR__);
 
 require_once ROOT . '/app/models/Model.php';
 require_once ROOT . '/app/models/Icon.php';
+require_once ROOT . '/app/models/Bridge.php';
 
 $l_sBdd = 'finance_manager';
 $l_cCon = Model::getConnection();

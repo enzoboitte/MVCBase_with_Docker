@@ -144,18 +144,31 @@ class CBridgeApi
     public function F_lInitializeUser(?string $p_sUserUuid = null, ?string $p_sExternalUserId = null): array
     {
         if ($p_sUserUuid) {
+            // On a un external_user_id, essayer d'abord de générer un token
             $this->F_vSetUserUuid($p_sUserUuid);
             $l_lTokenResult = $this->F_lGenerateToken(true);
+            
+            // Si échec (utilisateur n'existe pas), le créer
+            if (!$l_lTokenResult['success']) {
+                $l_lUserResult = $this->F_lCreateUser($p_sUserUuid);
+                if (!$l_lUserResult['success']) {
+                    return $l_lUserResult;
+                }
+                // Réessayer de générer le token
+                $l_lTokenResult = $this->F_lGenerateToken(true);
+                if (!$l_lTokenResult['success']) {
+                    return $l_lTokenResult;
+                }
+            }
         } else {
             $l_lUserResult = $this->F_lCreateUser($p_sExternalUserId);
             if (!$l_lUserResult['success']) {
                 return $l_lUserResult;
             }
             $l_lTokenResult = $this->F_lGenerateToken();
-        }
-
-        if (!$l_lTokenResult['success']) {
-            return $l_lTokenResult;
+            if (!$l_lTokenResult['success']) {
+                return $l_lTokenResult;
+            }
         }
 
         $l_lAccountsResult = $this->F_lGetAccounts();

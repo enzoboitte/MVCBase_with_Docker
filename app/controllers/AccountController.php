@@ -183,41 +183,64 @@ class AccountController extends Controller
     // API BRIDGE
     // ========================
 
+    /**
+     * Génère l'UUID Bridge unique basé sur l'admin
+     * Format: sha256(id + created_at + "accounting_bank")
+     */
+    private function generateBridgeUserUuid(): string
+    {
+        $adminId = $_SESSION['user']['id'];
+        $conn = Model::getConnection();
+        $stmt = $conn->prepare('SELECT id, created_at FROM Admin WHERE id = :id');
+        $stmt->execute(['id' => $adminId]);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return hash('sha256', $admin['id'] . $admin['created_at'] . 'accounting_bank');
+    }
+
+    /**
+     * Initialise Bridge avec l'UUID unique de l'admin
+     * Retourne l'instance CBridgeApi initialisée ou null si erreur
+     */
+    private ?array $bridgeError = null;
+    
+    private function initializeBridge(): ?CBridgeApi
+    {
+        $bridge = $this->getBridgeApi();
+        $userUuid = $this->generateBridgeUserUuid();
+        
+        $result = $bridge->F_lInitializeUser($userUuid);
+        
+        if ($result['success']) {
+            $bridge->F_vSaveToSession();
+            return $bridge;
+        }
+        
+        $this->bridgeError = $result;
+        return null;
+    }
+
     #[CRoute('/api/bridge/init', CHTTPMethod::POST)]
     public function apiBridgeInit(): void
     {
         $bridge = $this->getBridgeApi();
-        $adminId = $_SESSION['user']['id'];
         
-        // Récupérer le token bridge de l'admin s'il existe
-        $conn = Model::getConnection();
-        $stmt = $conn->prepare('SELECT token_bridge FROM Admin WHERE id = :id');
-        $stmt->execute(['id' => $adminId]);
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Générer l'UUID unique pour cet admin
+        $userUuid = $this->generateBridgeUserUuid();
         
-        if ($admin && !empty($admin['token_bridge'])) {
-            // Utilisateur déjà enregistré sur Bridge
-            $bridge->F_vSetUserUuid($admin['token_bridge']);
-            $tokenResult = $bridge->F_lGenerateToken();
-            
-            if ($tokenResult['success']) {
-                $bridge->F_vSaveToSession();
-                $this->json(['code' => 200, 'message' => 'Session Bridge initialisée', 'has_user' => true]);
-                return;
-            }
-        }
-        
-        // Créer un nouvel utilisateur Bridge
-        $externalId = 'admin_' . $adminId . '_' . time();
-        $result = $bridge->F_lInitializeUser(null, $externalId);
+        // Initialiser l'utilisateur Bridge (crée s'il n'existe pas, sinon récupère)
+        $result = $bridge->F_lInitializeUser($userUuid);
         
         if ($result['success']) {
-            // Sauvegarder le UUID dans la base
-            $stmt = $conn->prepare('UPDATE Admin SET token_bridge = :token WHERE id = :id');
-            $stmt->execute(['token' => $result['user_uuid'], 'id' => $adminId]);
-            
             $bridge->F_vSaveToSession();
-            $this->json(['code' => 200, 'message' => 'Utilisateur Bridge créé', 'data' => $result]);
+            $this->json([
+                'code' => 200, 
+                'message' => 'Session Bridge initialisée',
+                'data' => [
+                    'user_uuid' => $result['user_uuid'],
+                    'accounts_count' => $result['accounts_count']
+                ]
+            ]);
         } else {
             $this->json(['code' => 500, 'error' => 'Erreur lors de l\'initialisation Bridge', 'details' => $result]);
         }
@@ -226,10 +249,10 @@ class AccountController extends Controller
     #[CRoute('/api/bridge/connect', CHTTPMethod::POST)]
     public function apiBridgeConnect(): void
     {
-        $bridge = $this->getBridgeApi();
+        $bridge = $this->initializeBridge();
         
-        if (!$bridge->F_bLoadFromSession()) {
-            $this->json(['code' => 401, 'error' => 'Session Bridge non initialisée. Appelez /api/bridge/init d\'abord.']);
+        if (!$bridge) {
+            $this->json(['code' => 500, 'error' => 'Impossible d\'initialiser Bridge', 'details' => $this->bridgeError]);
             return;
         }
 
@@ -249,9 +272,10 @@ class AccountController extends Controller
             $this->json([
                 'code' => 200, 
                 'data' => [
-                    'connect_url' => $result['response']['connect_url'] ?? null,
+                    'connect_url' => $result['response']['url'] ?? $result['response']['connect_url'] ?? null,
                     'session_id' => $result['response']['id'] ?? null,
-                ]
+                ],
+                'debug' => $result['response']
             ]);
         } else {
             $this->json(['code' => 500, 'error' => 'Erreur lors de la création de session', 'details' => $result]);
@@ -261,10 +285,10 @@ class AccountController extends Controller
     #[CRoute('/api/bridge/accounts', CHTTPMethod::GET)]
     public function apiBridgeGetAccounts(): void
     {
-        $bridge = $this->getBridgeApi();
+        $bridge = $this->initializeBridge();
         
-        if (!$bridge->F_bLoadFromSession()) {
-            $this->json(['code' => 401, 'error' => 'Session Bridge non initialisée']);
+        if (!$bridge) {
+            $this->json(['code' => 500, 'error' => 'Impossible d\'initialiser Bridge']);
             return;
         }
 
@@ -288,10 +312,10 @@ class AccountController extends Controller
             return;
         }
 
-        $bridge = $this->getBridgeApi();
+        $bridge = $this->initializeBridge();
         
-        if (!$bridge->F_bLoadFromSession()) {
-            $this->json(['code' => 401, 'error' => 'Session Bridge non initialisée']);
+        if (!$bridge) {
+            $this->json(['code' => 500, 'error' => 'Impossible d\'initialiser Bridge']);
             return;
         }
 
@@ -366,10 +390,10 @@ class AccountController extends Controller
     #[CRoute('/api/bridge/sync', CHTTPMethod::POST)]
     public function apiBridgeSync(): void
     {
-        $bridge = $this->getBridgeApi();
+        $bridge = $this->initializeBridge();
         
-        if (!$bridge->F_bLoadFromSession()) {
-            $this->json(['code' => 401, 'error' => 'Session Bridge non initialisée']);
+        if (!$bridge) {
+            $this->json(['code' => 500, 'error' => 'Impossible d\'initialiser Bridge']);
             return;
         }
 

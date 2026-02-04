@@ -194,7 +194,11 @@ async function loadFilters() {
 
 async function loadStats() {
     try {
-        const res = await apiRequest('GET', '/api/transactions/stats');
+        // Toujours charger les stats du mois actuel
+        const now = new Date();
+        const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        
+        const res = await apiRequest('GET', `/api/transactions/stats?month=${currentMonth}`);
         if (res.code === 200) {
             document.getElementById('statIncome').textContent = formatCurrency(res.data.total_income);
             document.getElementById('statExpense').textContent = formatCurrency(res.data.total_expense);
