@@ -266,7 +266,7 @@ class AccountController extends Controller
 
         // --- CONSTRUCTION AUTOMATIQUE DE L'URL ---
         // Détecte le protocole (http ou https)
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $protocol = "https://"; //(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         // Récupère le nom de domaine (ex: tyche-info.fr ou localhost:8080)
         $domainName = $_SERVER['HTTP_HOST'];
         
