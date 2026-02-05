@@ -1138,6 +1138,9 @@ class TransactionController extends Controller
                 $totalExpense = abs((float)$row['total']);
             }
         }
+
+        var_dump("Stats compte $idAccount : Income = $totalIncome, Expense = $totalExpense, Net = " . ($totalIncome - $totalExpense));
+
         return [
             'total_income' => round($totalIncome, 2),
             'total_expense' => round($totalExpense, 2),
