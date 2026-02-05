@@ -7,7 +7,7 @@
         </div>
         <nav class="flex-1" style="display:flex;flex-direction:column;gap:0.5rem;">
             <a href="/accounts" class="btn btn-ghost" style="justify-content:flex-start;border-radius:8px;">
-                <?= EFinanceIcon::Wallet->getHtmlSvg() ?> <span>Mes comptes</span>
+                <?= EFinanceIcon::Card->getHtmlSvg() ?> <span>Mes comptes</span>
             </a>
             <a href="/transactions" class="btn btn-ghost" style="justify-content:flex-start;border-radius:8px;">
                 <?= EFinanceIcon::Transaction->getHtmlSvg() ?> <span>Transactions</span>
