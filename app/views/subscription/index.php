@@ -64,7 +64,7 @@
             </div>
         </section>-->
 
-        <section class="card">
+        <section class="card flex-1">
             <div class="card-header">
                 <div class="card-title"><?= EFinanceIcon::TrendDown->getHtmlSvg() ?> Déjà prélevés</div>
                 <span class="badge badge-neutral" id="currentMonth">--</span>
@@ -74,7 +74,7 @@
             </div>
         </section>
 
-        <section class="card">
+        <section class="card flex-1">
             <div class="card-header">
                 <div class="card-title"><?= EFinanceIcon::Calendar->getHtmlSvg() ?> À venir ce mois</div>
             </div>
