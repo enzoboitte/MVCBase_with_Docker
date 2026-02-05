@@ -274,6 +274,8 @@ class AccountController extends Controller
         $callbackPath = '/accounts/create/import/callback';
         $autoCallbackUrl = $protocol . $domainName . $callbackPath;
 
+        die($autoCallbackUrl); // Debug pour vérifier l'URL générée
+
         $result = $bridge->F_lCreateConnectSession($email, [
             // Utilise l'URL auto si rien n'est envoyé dans le body JSON
             'callback_url' => ($data['callback_url'] ?? $autoCallbackUrl),
