@@ -12,7 +12,6 @@ class UserController extends Controller
         }
         
         $this->view('user/connection', [
-            'back' => '/',
             'title' => 'Connexion'
         ]);
     }
