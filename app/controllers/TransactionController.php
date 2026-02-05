@@ -708,9 +708,11 @@ class TransactionController extends Controller
                 - ($avgAccountDailyExpense * $remainingDays);
 
             $statAccount        = $this->getTotalStatsByIdAccount($account['id']);
-            //$totalIncome        = $statAccount['total_income'];
-            //$totalExpense       = $statAccount['total_expense'];
+            $totalIncome2        = $statAccount['total_income'];
+            $totalExpense2       = $statAccount['total_expense'];
             $netTotalAccount    = $statAccount['net_total'];
+
+            var_dump("Stats compte Income = $totalIncome2, Expense = $totalExpense2, Net = " . ($totalIncome2 - $totalExpense2) . ", total balance = " . $account['balance'] . ", projected end balance = $projectedAccountEndBalance");
             
             $forecastByAccount[] = [
                 'id' => $account['id'],
@@ -1138,8 +1140,6 @@ class TransactionController extends Controller
                 $totalExpense = abs((float)$row['total']);
             }
         }
-
-        var_dump("Stats compte $idAccount : Income = $totalIncome, Expense = $totalExpense, Net = " . ($totalIncome - $totalExpense));
 
         return [
             'total_income' => round($totalIncome, 2),
