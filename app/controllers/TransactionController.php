@@ -706,13 +706,18 @@ class TransactionController extends Controller
             $projectedAccountEndBalance = (float)$account['balance']
                 + ($avgAccountDailyIncome * $remainingDays)
                 - ($avgAccountDailyExpense * $remainingDays);
+
+            $statAccount        = $this->getTotalStatsByIdAccount($account['id']);
+            //$totalIncome        = $statAccount['total_income'];
+            //$totalExpense       = $statAccount['total_expense'];
+            $netTotalAccount    = $statAccount['net_total'];
             
             $forecastByAccount[] = [
                 'id' => $account['id'],
                 'name' => $account['name'],
                 'color' => $account['color'],
                 'type' => $account['type'],
-                'current_balance' => (float)$account['balance'],
+                'current_balance' => (float)$account['balance'] - $netTotalAccount, // Solde actuel en retirant les transactions du mois
                 'month_income' => $accountIncome,
                 'month_expense' => $accountExpense,
                 'projected_end_balance' => round($projectedAccountEndBalance, 2),
@@ -1078,5 +1083,65 @@ class TransactionController extends Controller
                 'accounts' => $accountForecasts
             ]
         ]);
+    }
+
+    public function getTransactionsByIdAccount(string $idAccount): array
+    {
+        $conn = Model::getConnection();
+        $stmt = $conn->prepare('SELECT * FROM Transaction WHERE account_id = :account_id AND admin_id = :admin_id ORDER BY date DESC');
+        $stmt->execute(['account_id' => $idAccount, 'admin_id' => $_SESSION['user']['id']]);
+        
+        $total = 0;
+        $totalIncome = 0;
+        $totalExpense = 0;
+        $transactions = [];
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $tx) {
+            $amount = (float)$tx['amount'];
+            if ($tx['type'] === 'income') {
+                $totalIncome += $amount;
+            } else {
+                $totalExpense += abs($amount);
+            }
+            $total += $amount;
+            $transactions[] = [
+                'id' => $tx['id'],
+                'account_id' => $tx['account_id'],
+                'category_id' => $tx['category_id'],
+                'amount' => round($amount, 2),
+                'type' => $tx['type'],
+                'date' => $tx['date'],
+                'description' => $tx['description']
+            ];
+        }
+        return [
+            'total' => round($total, 2),
+            'total_income' => round($totalIncome, 2),
+            'total_expense' => round($totalExpense, 2),
+            'transactions' => $transactions
+        ];
+    }
+    
+    public function getTotalStatsByIdAccount(string $idAccount): array
+    {
+        $conn = Model::getConnection();
+        $stmt = $conn->prepare('SELECT type, SUM(amount) as total FROM Transaction WHERE account_id = :account_id AND admin_id = :admin_id GROUP BY type');
+        $stmt->execute(['account_id' => $idAccount, 'admin_id' => $_SESSION['user']['id']]);
+        
+        $totalIncome = 0;
+        $totalExpense = 0;
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            if ($row['type'] === 'income') {
+                $totalIncome = (float)$row['total'];
+            } else {
+                $totalExpense = abs((float)$row['total']);
+            }
+        }
+        return [
+            'total_income' => round($totalIncome, 2),
+            'total_expense' => round($totalExpense, 2),
+            'net_total' => round($totalIncome - $totalExpense, 2)
+        ];
     }
 }
