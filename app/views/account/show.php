@@ -5,7 +5,7 @@
 
     <main class="app-main">
         <!-- Header -->
-        <section class="card">
+        <section class="card nohover">
             <div class="card-header">
                 <div class="card-title">
                     <?= EFinanceIcon::Card->getHtmlSvg() ?>
@@ -25,9 +25,9 @@
         </section>
 
         <!-- Infos du compte -->
-        <section class="row">
+        <section class="row center">
             <div class="col-4">
-                <div class="card">
+                <div class="card nohover">
                     <div class="card-header">
                         <div class="card-title">Solde actuel</div>
                     </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="card">
+                <div class="card nohover">
                     <div class="card-header">
                         <div class="card-title">Solde comptable</div>
                     </div>
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="card">
+                <div class="card nohover">
                     <div class="card-header">
                         <div class="card-title">Solde instantané</div>
                     </div>

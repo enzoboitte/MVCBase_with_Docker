@@ -35,7 +35,7 @@ CREATE TABLE `Account`(
     `color` VARCHAR(7) NOT NULL DEFAULT '#000000',
     `type` ENUM('checking', 'savings', 'credit_card', 'cash', 'other') NOT NULL DEFAULT 'other',
     `id_bridge` VARCHAR(255) DEFAULT NULL,
-    `last_sync` TIMESTAMP NULL DEFAULT NULL,
+    `last_sync` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`admin_id`) REFERENCES `Admin`(`id`) ON DELETE CASCADE

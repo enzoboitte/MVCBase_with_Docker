@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (response.ok) {
                 // Redirect to dashboard
-                window.location.href = '/dashboard';
+                window.location.href = '/';
             } else {
                 errorDiv.textContent = data.message || 'Identifiants incorrects';
                 errorDiv.classList.add('show');

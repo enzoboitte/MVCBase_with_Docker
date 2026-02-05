@@ -74,9 +74,9 @@
         </section>
 
         <!-- Stats rapides -->
-        <section class="row">
+        <section class="row center">
             <div class="col-4">
-                <div class="card">
+                <div class="card nohover">
                     <div class="card-header">
                         <div class="card-title"><?= EFinanceIcon::Income->getHtmlSvg() ?> Revenus</div>
                     </div>
@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="card">
+                <div class="card nohover">
                     <div class="card-header">
                         <div class="card-title"><?= EFinanceIcon::Expense->getHtmlSvg() ?> Dépenses</div>
                     </div>
@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="card">
+                <div class="card nohover">
                     <div class="card-header">
                         <div class="card-title"><?= EFinanceIcon::TrendUp->getHtmlSvg() ?> Balance</div>
                     </div>
@@ -112,7 +112,7 @@
             </div>
             <div class="card-body" style="overflow:auto;">
                 <table class="table" id="transactionsTable">
-                    <thead>
+                    <thead style="position:sticky;top:0;">
                         <tr>
                             <th>Date</th>
                             <th>Description</th>

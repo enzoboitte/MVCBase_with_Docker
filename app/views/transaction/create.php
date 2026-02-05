@@ -5,7 +5,7 @@
 
     <main class="app-main">
         <!-- Header -->
-        <section class="card">
+        <section class="card nohover">
             <div class="card-header">
                 <div class="card-title">
                     <?= EFinanceIcon::Plus->getHtmlSvg() ?>
@@ -19,7 +19,7 @@
         </section>
 
         <!-- Formulaire -->
-        <section class="card">
+        <section class="card" style="width: fit-content;">
             <div class="card-header">
                 <div class="card-title">Informations</div>
             </div>
@@ -27,7 +27,7 @@
                 <form id="createTransactionForm" style="display:flex;flex-direction:column;gap:1rem;max-width:500px;">
                     <!-- Type -->
                     <div class="input-group">
-                        <label class="input-label">Type *</label>
+                        <label class="input-label">Type <span class="required">*</span></label>
                         <div style="display:flex;gap:1rem;">
                             <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
                                 <input type="radio" name="type" value="expense" checked>
@@ -46,7 +46,7 @@
 
                     <!-- Compte -->
                     <div class="input-group">
-                        <label class="input-label">Compte *</label>
+                        <label class="input-label">Compte <span class="required">*</span></label>
                         <div class="input-control">
                             <select name="account_id" id="accountSelect" required>
                                 <option value="">Sélectionner un compte</option>
@@ -64,7 +64,7 @@
 
                     <!-- Catégorie -->
                     <div class="input-group">
-                        <label class="input-label">Catégorie *</label>
+                        <label class="input-label">Catégorie <span class="required">*</span></label>
                         <div class="input-control">
                             <select name="category_id" id="categorySelect" required>
                                 <option value="">Sélectionner une catégorie</option>
@@ -74,7 +74,7 @@
 
                     <!-- Date -->
                     <div class="input-group">
-                        <label class="input-label">Date *</label>
+                        <label class="input-label">Date <span class="required">*</span></label>
                         <div class="input-control">
                             <input type="date" name="date" required>
                         </div>

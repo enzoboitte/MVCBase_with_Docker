@@ -97,7 +97,8 @@ body, html {
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 .text-success { color: #16a34a; }
-.text-danger { color: #dc2626; }
+.text-danger, .required { color: #dc2626; }
+
 
 .text-truncate {
     white-space: nowrap;

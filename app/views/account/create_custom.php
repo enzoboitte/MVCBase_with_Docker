@@ -5,7 +5,7 @@
 
     <main class="app-main">
         <!-- Header -->
-        <section class="card">
+        <section class="card nohover">
             <div class="card-header">
                 <div class="card-title">
                     <?= EFinanceIcon::Edit->getHtmlSvg() ?>
@@ -19,21 +19,21 @@
         </section>
 
         <!-- Formulaire -->
-        <section class="card">
+        <section class="card" style="width: fit-content;">
             <div class="card-header">
                 <div class="card-title">Informations du compte</div>
             </div>
             <div class="card-body">
                 <form id="createAccountForm" style="display:flex;flex-direction:column;gap:1rem;max-width:500px;">
                     <div class="input-group">
-                        <label class="input-label">Nom du compte *</label>
+                        <label class="input-label">Nom du compte <span class="required">*</span></label>
                         <div class="input-control">
                             <input type="text" name="name" placeholder="Ex: Compte Courant, Épargne..." required>
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label class="input-label">Type de compte *</label>
+                        <label class="input-label">Type de compte <span class="required">*</span></label>
                         <div class="input-control">
                             <select name="type" required>
                                 <option value="checking">Compte courant</option>

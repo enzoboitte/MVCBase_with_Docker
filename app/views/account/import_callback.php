@@ -1,11 +1,9 @@
 <?php ob_start(); ?>
 
 <div class="app-shell">
-    <?php include ROOT . '/app/views/components/menu.php'; ?>
-
     <main class="app-main">
         <!-- Header -->
-        <section class="card">
+        <section class="card nohover">
             <div class="card-header">
                 <div class="card-title">
                     <?= EFinanceIcon::Sync->getHtmlSvg() ?>
@@ -55,7 +53,8 @@ async function processCallback() {
             
             // Rediriger vers la page d'import après 2 secondes
             setTimeout(() => {
-                window.location.href = '/accounts/create/import';
+                // fermer la fenêtre de callback
+                window.close();
             }, 2000);
         } else {
             throw new Error('Aucun compte trouvé');

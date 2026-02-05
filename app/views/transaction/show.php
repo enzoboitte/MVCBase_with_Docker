@@ -5,7 +5,7 @@
 
     <main class="app-main">
         <!-- Header -->
-        <section class="card">
+        <section class="card nohover">
             <div class="card-header">
                 <div class="card-title">
                     <?= EFinanceIcon::Transaction->getHtmlSvg() ?>

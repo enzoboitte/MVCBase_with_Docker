@@ -17,15 +17,15 @@
             </a>
 
 
-            <a href="/transactions/add" class="btn btn-primary" style="justify-content:flex-start;border-radius:8px;font-size:0.7rem;">
+            <a href="/transactions/add" class="btn btn-primary btn-sm" style="justify-content:flex-start;border-radius:8px;">
                 <?= EFinanceIcon::Plus->getHtmlSvg() ?> <span>Ajouter une transaction</span>
             </a>
         </nav>
         <nav style="display:flex;flex-direction:column;gap:0.5rem;">
-            <a href="/settings" class="btn btn-ghost" style="justify-content:flex-start;border-radius:8px;">
+            <!--<a href="/settings" class="btn btn-ghost" style="justify-content:flex-start;border-radius:8px;">
                 <?= EFinanceIcon::Settings->getHtmlSvg() ?> <span>Paramètres</span>
-            </a>
-            <a href="/logout" class="btn btn-ghost" style="justify-content:flex-start;border-radius:8px;">
+            </a>-->
+            <a href="/logout" class="btn btn-danger btn-sm" style="justify-content:flex-start;border-radius:8px;">
                 <?= EFinanceIcon::Logout->getHtmlSvg() ?> <span>Déconnexion</span>
             </a>
         </nav>

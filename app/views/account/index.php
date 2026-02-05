@@ -12,10 +12,6 @@
                     Mes comptes bancaires
                 </div>
                 <div style="display:flex;gap:0.5rem;">
-                    <button onclick="syncAccounts()" class="btn btn-outline btn-sm">
-                        <?= EFinanceIcon::Sync->getHtmlSvg('icon-sm') ?>
-                        Synchroniser
-                    </button>
                     <a href="/accounts/create" class="btn btn-primary btn-sm">
                         <?= EFinanceIcon::Plus->getHtmlSvg('icon-sm') ?>
                         Ajouter un compte
@@ -138,19 +134,6 @@ async function deleteAccount(id, name) {
         loadAccounts();
     } catch (error) {
         alert('Erreur lors de la suppression');
-    }
-}
-
-async function syncAccounts() {
-    try {
-        // Initialiser Bridge si nécessaire
-        await apiRequest('POST', '/api/bridge/init');
-        const result = await apiRequest('POST', '/api/bridge/sync');
-        alert(result.message || 'Synchronisation terminée');
-        loadAccounts();
-    } catch (error) {
-        console.error('Erreur sync:', error);
-        alert('Erreur lors de la synchronisation. Vérifiez que vos comptes sont bien connectés à Bridge.');
     }
 }
 

@@ -118,7 +118,7 @@ async function loadDashboard() {
         document.getElementById('projectedBalance').textContent = formatCurrency(data.forecast.projected_balance);
         const variation = data.forecast.projected_variation;
         const variationEl = document.getElementById('projectedVariation');
-        variationEl.textContent = (variation >= 0 ? '+' : '') + formatCurrency(variation);
+        variationEl.textContent = "Projeté: " + (variation >= 0 ? '+' : '') + formatCurrency(variation);
         variationEl.className = 'card-footer ' + (variation >= 0 ? 'text-success' : 'text-danger');
         
         // Revenus/Dépenses/Abonnements du mois

@@ -642,17 +642,35 @@ class TransactionController extends Controller
         // Revenus et dépenses prévus pour le reste du mois
         $projectedRemainingIncome = $avgDailyIncome * $remainingDays;
         $projectedRemainingExpense = $avgDailyExpense * $remainingDays;
+
+        // Récupérer les stats des abonnements
+        $subscriptionCtrl = new SubscriptionController();
+        $statSub = $subscriptionCtrl->getStats();
         
-        // Ajouter les abonnements restants du mois (estimés)
-        $remainingSubscriptionIncome = ($subscriptionIncomeMonthly / $daysInMonth) * $remainingDays;
-        $remainingSubscriptionExpense = ($subscriptionExpenseMonthly / $daysInMonth) * $remainingDays;
+        // Abonnements déjà prélevés ce mois
+        $paidSubExpense = $statSub['paid_this_month']['expense'];      // Dépenses déjà prélevées
+        $paidSubIncome = $statSub['paid_this_month']['income'];        // Revenus déjà reçus
         
-        // Prévision totale fin de mois (tous comptes confondus)
+        // Abonnements restants à prélever ce mois
+        $remainingSubExpense = $statSub['remaining_this_month']['expense'];  // Dépenses à venir
+        $remainingSubIncome = $statSub['remaining_this_month']['income'];    // Revenus à venir
+
+        // Total des abonnements du mois (passés + restants)
+        $totalSubExpense = $paidSubExpense + $remainingSubExpense;
+        $totalSubIncome = $paidSubIncome + $remainingSubIncome;
+
+        // Solde actuel en tenant compte des abonnements déjà passés
+        $currentBalanceWithPaidSubs = $totalBalance - $paidSubExpense + $paidSubIncome;
+
+        // Solde projeté à la fin du mois = solde actuel - TOUS les abonnements du mois
+        $projectedEndOfMonthBalanceJustRemaining = $totalBalance - $totalSubExpense + $totalSubIncome;
+        
+        // Prévision totale fin de mois (avec projection des transactions + abonnements restants)
         $projectedEndOfMonthBalance = $totalBalance 
             + $projectedRemainingIncome 
             - $projectedRemainingExpense
-            + $remainingSubscriptionIncome 
-            - $remainingSubscriptionExpense;
+            - $totalSubExpense 
+            + $totalSubIncome;
         
         $projectedMonthlyIncome = $totalIncome + $projectedRemainingIncome;
         $projectedMonthlyExpense = $totalExpense + $projectedRemainingExpense;
@@ -776,20 +794,32 @@ class TransactionController extends Controller
                 ],
                 
                 // Solde total de tous les comptes
-                'total_balance' => round($totalBalance, 2),
+                'total_balance' => round($currentBalanceWithPaidSubs, 2),
                 
-                // Abonnements mensuels
+                // Solde actuel avec abonnements déjà passés
+                'current_balance_with_subs' => round($currentBalanceWithPaidSubs, 2),
+                
+                // Abonnements mensuels (totaux)
                 'subscriptions' => [
                     'income' => round($subscriptionIncomeMonthly, 2),
                     'expense' => round($subscriptionExpenseMonthly, 2),
-                    'net' => round($subscriptionNetMonthly, 2)
+                    'net' => round($subscriptionNetMonthly, 2),
+                    // Détails pour ce mois
+                    'paid' => [
+                        'income' => round($paidSubIncome, 2),
+                        'expense' => round($paidSubExpense, 2),
+                    ],
+                    'remaining' => [
+                        'income' => round($remainingSubIncome, 2),
+                        'expense' => round($remainingSubExpense, 2),
+                    ]
                 ],
                 
                 // Prévisions globales
                 'forecast' => [
                     'projected_income' => round($projectedMonthlyIncome, 2),
                     'projected_expense' => round($projectedMonthlyExpense, 2),
-                    'projected_balance' => round($projectedEndOfMonthBalance, 2),
+                    'projected_balance' => round($projectedEndOfMonthBalanceJustRemaining, 2),
                     'projected_variation' => round($projectedEndOfMonthBalance - $totalBalance, 2)
                 ],
                 
