@@ -264,8 +264,19 @@ class AccountController extends Controller
             return;
         }
 
+        // --- CONSTRUCTION AUTOMATIQUE DE L'URL ---
+        // Détecte le protocole (http ou https)
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        // Récupère le nom de domaine (ex: tyche-info.fr ou localhost:8080)
+        $domainName = $_SERVER['HTTP_HOST'];
+        
+        // Définit le chemin de ton callback (le script qui reçoit le retour de la banque)
+        $callbackPath = '/accounts/create/import/callback';
+        $autoCallbackUrl = $protocol . $domainName . $callbackPath;
+
         $result = $bridge->F_lCreateConnectSession($email, [
-            'callback_url' => ($data['callback_url'] ?? 'http://localhost:8080/accounts/create/import/callback'),
+            // Utilise l'URL auto si rien n'est envoyé dans le body JSON
+            'callback_url' => ($data['callback_url'] ?? $autoCallbackUrl),
         ]);
         
         if ($result['success']) {
@@ -274,6 +285,7 @@ class AccountController extends Controller
                 'data' => [
                     'connect_url' => $result['response']['url'] ?? $result['response']['connect_url'] ?? null,
                     'session_id' => $result['response']['id'] ?? null,
+                    'callback_used' => $autoCallbackUrl // Debug pour vérifier l'URL générée
                 ],
                 'debug' => $result['response']
             ]);
