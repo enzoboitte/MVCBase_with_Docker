@@ -58,7 +58,7 @@ function F_sFormatCurrency(float $l_fAmount): string {
                 <div class="card-title"><?= EFinanceIcon::Card->getHtmlSvg() ?> Mes comptes</div>
             </div>
             <div class="card-body" style="overflow-x: auto; overflow-y: hidden;">
-                <div id="account_list" class="accounts-scroll center">
+                <div id="account_list" class="accounts-scroll">
                     <!-- Chargé via JS -->
                 </div>
             </div>
@@ -173,7 +173,7 @@ function loadAccounts(accounts) {
     accountList.innerHTML = accounts.map(acc => `
         <div class="account-card-item">
             <a href="/accounts/${acc.id}" class="card nohover" style="background:${acc.color}15;text-decoration:none;color:inherit;">
-                <b>${acc.name}</b><br>
+                <b class="text-truncate">${acc.name}</b><br>
                 ${formatCurrency(acc.current_balance)}
                 <div style="margin-top:0.5rem;font-size:0.75rem;" class="${acc.variation >= 0 ? 'text-success' : 'text-danger'}">
                     ${acc.variation >= 0 ? '↑' : '↓'} ${formatCurrency(Math.abs(acc.variation))} prévu

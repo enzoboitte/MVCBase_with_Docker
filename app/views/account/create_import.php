@@ -53,7 +53,7 @@
             </div>
             <div class="card-body" style="overflow:auto;">
                 <table class="table" id="bridgeAccountsTable">
-                    <thead>
+                    <thead style="position:sticky;top:0;">
                         <tr>
                             <th style="width:40px;">
                                 <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
@@ -105,7 +105,7 @@ async function initBridge() {
     
     btn.disabled = true;
     btn.textContent = 'Initialisation...';
-    status.style.display = 'block';
+    status.style.display = 'flex';
     status.textContent = 'Connexion à Bridge en cours...';
     
     try {
@@ -127,7 +127,7 @@ async function initBridge() {
                 '<small>Une fois terminé, cliquez sur "Rafraîchir" ci-dessous.</small>';
             
             // Afficher l'étape d'import
-            document.getElementById('stepImport').style.display = 'block';
+            document.getElementById('stepImport').style.display = 'flex';
             btn.textContent = 'Reconnecter';
             btn.disabled = false;
         } else {
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         await apiRequest('POST', '/api/bridge/init');
         // Si l'init fonctionne, on peut afficher les comptes
-        document.getElementById('stepImport').style.display = 'block';
+        document.getElementById('stepImport').style.display = 'flex';
         refreshBridgeAccounts();
     } catch (e) {
         // Pas de session Bridge, l'utilisateur doit se connecter

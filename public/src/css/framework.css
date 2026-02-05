@@ -33,7 +33,7 @@ body, html {
     height: 100vh;      /* Force la hauteur exacte de la fenêtre */
     display: grid;
     grid-template-columns: 260px 1fr;
-    gap: 2rem;
+    gap: 20px;
     padding: 1rem;      /* Marge autour de l'application */
     box-sizing: border-box; 
     overflow: hidden;   /* Coupe tout ce qui dépasse du shell */
@@ -56,7 +56,6 @@ body, html {
     flex-direction: column; /* Vertical */
     gap: 1.5rem;            /* Espace entre les lignes */
     overflow: hidden;       /* Important : empêche le scroll global ici */
-    padding-bottom: 0.5rem;
 }
 
 .section {
