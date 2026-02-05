@@ -709,7 +709,7 @@ class TransactionController extends Controller
 
             $statAccount        = $this->getTotalStatsByIdAccount($account['id']);
             //$totalIncome        = $statAccount['total_income'];
-            $totalExpense2       = $statAccount['total_expense'];
+            //$totalExpense       = $statAccount['total_expense'];
             $netTotalAccount    = $statAccount['net_total'];
             
             $forecastByAccount[] = [
@@ -717,7 +717,7 @@ class TransactionController extends Controller
                 'name' => $account['name'],
                 'color' => $account['color'],
                 'type' => $account['type'],
-                'current_balance' => (float)$account['balance'] - $totalExpense2, // Solde actuel en retirant les transactions du mois
+                'current_balance' => (float)$account['balance'] - $netTotalAccount, // Solde actuel en retirant les transactions du mois
                 'month_income' => $accountIncome,
                 'month_expense' => $accountExpense,
                 'projected_end_balance' => round($projectedAccountEndBalance, 2),
