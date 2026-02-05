@@ -712,14 +712,14 @@ class TransactionController extends Controller
             $totalExpense2       = $statAccount['total_expense'];
             $netTotalAccount    = $statAccount['net_total'];
 
-            var_dump("Stats compte Income = $totalIncome2, Expense = $totalExpense2, Net = " . ($totalIncome2 - $totalExpense2) . ", total balance = " . $account['balance'] . ", projected end balance = $projectedAccountEndBalance");
+            //var_dump("Stats compte Income = $totalIncome2, Expense = $totalExpense2, Net = " . ($totalIncome2 - $totalExpense2) . ", total balance = " . $account['balance'] . ", projected end balance = $projectedAccountEndBalance");
             
             $forecastByAccount[] = [
                 'id' => $account['id'],
                 'name' => $account['name'],
                 'color' => $account['color'],
                 'type' => $account['type'],
-                'current_balance' => (float)$account['balance'] - $netTotalAccount, // Solde actuel en retirant les transactions du mois
+                'current_balance' => (float)$account['balance'], // Solde actuel en retirant les transactions du mois
                 'month_income' => $accountIncome,
                 'month_expense' => $accountExpense,
                 'projected_end_balance' => round($projectedAccountEndBalance, 2),
