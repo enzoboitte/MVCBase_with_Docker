@@ -639,7 +639,7 @@ class TransactionController extends Controller
         $avgDailyIncome = $currentDay > 0 ? $totalIncome / $currentDay : 0;
         $avgDailyExpense = $currentDay > 0 ? $totalExpense / $currentDay : 0;
         
-        // Revenus et dépenses prévus pour le reste du mois
+        // Revenus et dépenses prévus pour le reste du mois (basé sur la moyenne)
         $projectedRemainingIncome = $avgDailyIncome * $remainingDays;
         $projectedRemainingExpense = $avgDailyExpense * $remainingDays;
 
@@ -647,30 +647,29 @@ class TransactionController extends Controller
         $subscriptionCtrl = new SubscriptionController();
         $statSub = $subscriptionCtrl->getStats();
         
-        // Abonnements déjà prélevés ce mois
-        $paidSubExpense = $statSub['paid_this_month']['expense'];      // Dépenses déjà prélevées
-        $paidSubIncome = $statSub['paid_this_month']['income'];        // Revenus déjà reçus
+        // Abonnements déjà prélevés ce mois (théoriquement, pas encore en transactions)
+        $paidSubExpense = $statSub['paid_this_month']['expense'];
+        $paidSubIncome = $statSub['paid_this_month']['income'];
         
         // Abonnements restants à prélever ce mois
-        $remainingSubExpense = $statSub['remaining_this_month']['expense'];  // Dépenses à venir
-        $remainingSubIncome = $statSub['remaining_this_month']['income'];    // Revenus à venir
+        $remainingSubExpense = $statSub['remaining_this_month']['expense'];
+        $remainingSubIncome = $statSub['remaining_this_month']['income'];
 
         // Total des abonnements du mois (passés + restants)
         $totalSubExpense = $paidSubExpense + $remainingSubExpense;
         $totalSubIncome = $paidSubIncome + $remainingSubIncome;
+        $netSubRemaining = $remainingSubIncome - $remainingSubExpense;
 
-        // Solde actuel en tenant compte des abonnements déjà passés
-        $currentBalanceWithPaidSubs = $totalBalance - $paidSubExpense + $paidSubIncome;
-
-        // Solde projeté à la fin du mois = solde actuel - TOUS les abonnements du mois
-        $projectedEndOfMonthBalanceJustRemaining = $totalBalance - $totalSubExpense + $totalSubIncome;
+        // Prévision fin de mois avec uniquement les abonnements RESTANTS
+        // Le solde actuel ($totalBalance) est le vrai solde des comptes
+        // On ajoute les abonnements restants (pas encore prélevés)
+        $projectedEndOfMonthBalance = $totalBalance + $netSubRemaining;
         
-        // Prévision totale fin de mois (avec projection des transactions + abonnements restants)
-        $projectedEndOfMonthBalance = $totalBalance 
+        // Prévision avec projection des transactions (moyenne journalière) + abonnements restants
+        $projectedEndOfMonthBalanceWithTrend = $totalBalance 
             + $projectedRemainingIncome 
             - $projectedRemainingExpense
-            - $totalSubExpense 
-            + $totalSubIncome;
+            + $netSubRemaining;
         
         $projectedMonthlyIncome = $totalIncome + $projectedRemainingIncome;
         $projectedMonthlyExpense = $totalExpense + $projectedRemainingExpense;
