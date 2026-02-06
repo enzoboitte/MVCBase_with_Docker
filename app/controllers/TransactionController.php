@@ -792,20 +792,17 @@ class TransactionController extends Controller
                     'remaining_days' => $remainingDays
                 ],
                 
-                // Revenus/Dépenses du mois
+                // Revenus/Dépenses du mois (transactions réelles)
                 'monthly' => [
                     'income' => round($totalIncome, 2),
                     'expense' => round($totalExpense, 2),
                     'balance' => round($monthlyBalance, 2)
                 ],
                 
-                // Solde total de tous les comptes
-                'total_balance' => round($currentBalanceWithPaidSubs, 2),
+                // Solde total actuel de tous les comptes (réel)
+                'total_balance' => round($totalBalance, 2),
                 
-                // Solde actuel avec abonnements déjà passés
-                'current_balance_with_subs' => round($currentBalanceWithPaidSubs, 2),
-                
-                // Abonnements mensuels (totaux)
+                // Abonnements mensuels (estimations)
                 'subscriptions' => [
                     'income' => round($subscriptionIncomeMonthly, 2),
                     'expense' => round($subscriptionExpenseMonthly, 2),
@@ -814,19 +811,27 @@ class TransactionController extends Controller
                     'paid' => [
                         'income' => round($paidSubIncome, 2),
                         'expense' => round($paidSubExpense, 2),
+                        'net' => round($paidSubIncome - $paidSubExpense, 2),
                     ],
                     'remaining' => [
                         'income' => round($remainingSubIncome, 2),
                         'expense' => round($remainingSubExpense, 2),
+                        'net' => round($netSubRemaining, 2),
                     ]
                 ],
                 
                 // Prévisions globales
                 'forecast' => [
+                    // Projection des revenus/dépenses du mois (avec tendance)
                     'projected_income' => round($projectedMonthlyIncome, 2),
                     'projected_expense' => round($projectedMonthlyExpense, 2),
-                    'projected_balance' => round($projectedEndOfMonthBalanceJustRemaining, 2),
-                    'projected_variation' => round($projectedEndOfMonthBalance - $totalBalance, 2)
+                    // Solde projeté fin de mois = solde actuel + abonnements restants
+                    'projected_balance' => round($projectedEndOfMonthBalance, 2),
+                    // Solde projeté avec tendance des transactions
+                    'projected_balance_with_trend' => round($projectedEndOfMonthBalanceWithTrend, 2),
+                    // Variation par rapport au solde actuel
+                    'projected_variation' => round($projectedEndOfMonthBalance - $totalBalance, 2),
+                    'projected_variation_with_trend' => round($projectedEndOfMonthBalanceWithTrend - $totalBalance, 2)
                 ],
                 
                 // Solde et prévisions par compte
